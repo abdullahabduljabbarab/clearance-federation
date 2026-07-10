@@ -70,29 +70,31 @@ type kind/domain, dead reckoning parameters.
 
 ## Test coverage
 
-**52 automation test cases** covering **61 REQ-IDs** across six
+**52 automation test cases** covering **69 REQ-IDs** across seven
 domains, tagged in each test's leading comment and runnable via
 `Automation RunTests Clearance.*` in the UE Session Frontend.
 
-| Test file                              | REQ-IDs covered       | Scope                                                              |
-|----------------------------------------|-----------------------|--------------------------------------------------------------------|
-| `ClearanceDISEmissionTests.cpp`        | REQ-DIS-011..014      | Emission PDU round-trip + malformed rejection                     |
-| `ClearanceDISFireDetonationTests.cpp`  | REQ-DIS-005..010      | Fire (Type 2) + Detonation (Type 3) round-trips                    |
-| `ClearanceDISSignalTests.cpp`          | REQ-DIS-019..022      | Signal PDU padding + operator-entity routing                       |
-| `ClearanceDISTransmitterTests.cpp`     | REQ-DIS-015..018      | Transmitter PDU round-trip                                         |
-| `ClearanceRPRFOMMappingTests.cpp`      | REQ-FED-001..005      | ForceId byte written at spec offset 18 for all 4 affiliations      |
-| `ClearanceInstructionValidatorTests.cpp` | REQ-COMMS-001..010  | Instruction envelope, military bypass, non-finite rejection        |
-| `ClearanceSafetyConstantsTests.cpp`    | REQ-SAFETY-001..009   | ICAO Doc 4444 wake matrix, RVSM vertical minima, sep thresholds    |
-| `ClearanceScoringTests.cpp`            | REQ-SCORE-001..005    | Incident log lifecycle, points per incident, difficulty ramp       |
-| `ClearanceSessionRecorderTests.cpp`    | REQ-SIM-001..008      | Start/stop lifecycle, PoseBack, events-in-range                    |
+| Test file                                | REQ-IDs covered       | Scope                                                              |
+|------------------------------------------|-----------------------|--------------------------------------------------------------------|
+| `ClearanceDISEmissionTests.cpp`          | REQ-DIS-011..014      | Emission PDU round-trip + malformed rejection                     |
+| `ClearanceDISFireDetonationTests.cpp`    | REQ-DIS-005..010      | Fire (Type 2) + Detonation (Type 3) round-trips                    |
+| `ClearanceDISSignalTests.cpp`            | REQ-DIS-019..022      | Signal PDU padding + operator-entity routing                       |
+| `ClearanceDISTransmitterTests.cpp`       | REQ-DIS-015..018      | Transmitter PDU round-trip                                         |
+| `ClearanceRPRFOMMappingTests.cpp`        | REQ-FED-001..006      | ForceId byte written at spec offset 18 for all 4 affiliations      |
+| `ClearanceInstructionValidatorTests.cpp` | REQ-COMMS-001..010    | Instruction envelope, military bypass, non-finite rejection        |
+| `ClearanceSafetyConstantsTests.cpp`      | REQ-SAFETY-001..009   | ICAO Doc 4444 wake matrix, RVSM vertical minima, sep thresholds    |
+| `ClearanceScoringTests.cpp`              | REQ-SCORE-001..006    | Incident log lifecycle, points per incident, difficulty ramp       |
+| `ClearanceSessionRecorderTests.cpp`      | REQ-SIM-001..008      | Start/stop lifecycle, PoseBack, events-in-range                    |
+| `ClearanceRadarEquationTests.cpp`        | REQ-RADAR-001..008    | R^4 range law, RCS scaling, kTBF noise floor, Pd monotonicity      |
 
 **Every REQ-ID cites its source**: IEEE 1278.1 sections, ICAO Doc
-4444, RVSM specification, aircraft certification data. The
-`REQUIREMENTS.md` companion doc tabulates all 61, and
-`V_AND_V_PLAN.md` documents the three-tier structure (unit /
-integration / manual) with five manual verification procedures
-(Wireshark capture, RTI Admin Console, in-process subscriber,
-two-federate live, automation full pass).
+4444, RVSM specification, aircraft certification data, Skolnik radar
+theory. The [`REQUIREMENTS.md`](REQUIREMENTS.md) companion doc
+tabulates all 69, and [`V_AND_V_PLAN.md`](V_AND_V_PLAN.md) documents
+the three-tier structure (unit, integration, manual) with five
+manual verification procedures (Wireshark capture, RTI Admin
+Console, in-process subscriber, two-federate live, automation full
+pass).
 
 ![All 52 automation tests passing in UE Session Frontend](docs/img/tests_passing.png)
 
