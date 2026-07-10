@@ -1,0 +1,10 @@
+.vs/
+.vscode/
+*.suo
+*.user
+Binaries/
+Intermediate/
+DerivedDataCache/
+*.tmp
+*.log
+Thumbs.db

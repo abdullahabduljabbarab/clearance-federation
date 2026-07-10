@@ -1,0 +1,190 @@
+// ============================================================================
+// AirspaceTelemetry.idl - OMG IDL definition for CLEARANCE's DDS topics.
+//
+// Mirrors the six DIS PDU shapes carried by the ClearanceDIS module so a
+// federation observer sees the SAME data primitives on both wires -
+// legacy DIS binary and modern DDS pub/sub. Each struct becomes a
+// separate DDS topic under the "clearance/*" namespace:
+//
+//   clearance/aircraft/state       -> AircraftState        (mirrors Entity State PDU)
+//   clearance/weapons/fire         -> FireEvent            (mirrors Fire PDU)
+//   clearance/weapons/detonation   -> DetonationEvent      (mirrors Detonation PDU)
+//   clearance/radar/emission       -> EmissionSnapshot     (mirrors Emission PDU)
+//   clearance/radio/transmitter    -> TransmitterState     (mirrors Transmitter PDU)
+//   clearance/radio/signal         -> SignalEvent          (mirrors Signal PDU)
+//
+// All coordinates in ECEF metres, velocities in m/s, orientation in radians -
+// same DIS-native units the ClearanceDIS module uses at its own boundary,
+// so a DIS-DDS bridge is a straight struct-to-struct copy.
+//
+// Extensibility is MUTABLE by default so future field additions don't
+// break running federates - a receiver that hasn't been updated will
+// silently drop the new fields, current behaviour preserved. - TripleA
+// ============================================================================
+
+module ClearanceRTI
+{
+    // ------------------------------------------------------------------------
+    // Common wire params - carried on every message so a federation observer
+    // knows which exercise / site / application published it. Small enough
+    // to duplicate per topic rather than force a lookup-by-entity pattern.
+    // ------------------------------------------------------------------------
+    struct WireHeader
+    {
+        octet ExerciseId;
+        unsigned short SiteId;
+        unsigned short ApplicationId;
+        double SimTimeSeconds;
+    };
+
+    // ------------------------------------------------------------------------
+    // AircraftState - clearance/aircraft/state
+    // Mirrors DIS Entity State PDU (Type 1, §7.3.4). Continuous stream at
+    // the sim tick rate, one instance per aircraft in the sector.
+    // The @key annotation makes EntityNumber the instance identifier so a
+    // subscriber can track per-aircraft history natively via DDS instances.
+    // ------------------------------------------------------------------------
+    struct AircraftState
+    {
+        WireHeader Header;
+        @key unsigned short EntityNumber;
+        string Marking;                          // callsign, up to 11 ASCII chars
+        octet ForceId;                           // 0=other 1=friendly 2=hostile 3=neutral (operator's declared classification)
+        octet EntityKind;                        // Annex A: 1=Platform
+        octet EntityDomain;                      // 2=Air
+        unsigned short EntityCountry;
+        octet EntityCategory;
+        octet EntitySubcategory;
+        octet EntitySpecific;
+        octet EntityExtra;
+        double XMeters;
+        double YMeters;
+        double ZMeters;
+        float VxMps;
+        float VyMps;
+        float VzMps;
+        float PsiRad;                            // yaw
+        float ThetaRad;                          // pitch
+        float PhiRad;                            // roll
+        // ATC extension fields - carry the ATC-specific state that stock DIS
+        // Entity State PDUs don't cover. Matches the ATCManagedAircraft
+        // subclass in ClearanceRPR-FOM.xml so a DIS-HLA-DDS bridge is direct.
+        octet TrueAffiliation;                   // god-view truth (same enum as ForceId)
+        unsigned short SquawkCode;               // Mode A/3 SSR code (0-7777 octal)
+        octet ActiveEmergency;                   // 0=None 1=GeneralMayday 2=CommsFailure 3=Hijack 4=FuelLow
+        octet FlightPhase;                       // 0=Enroute 1=Approach 2=Landing 3=GoAround 4=Departing 5=Exiting
+    };
+
+    // ------------------------------------------------------------------------
+    // FireEvent - clearance/weapons/fire
+    // Mirrors DIS Fire PDU (Type 2, §7.3.3). Fires on each SCRAMBLE launch.
+    // Event-driven, not continuous. EventNumber is the DDS instance key so
+    // subscribers can dedupe and pair with Detonation on the same key.
+    // ------------------------------------------------------------------------
+    struct FireEvent
+    {
+        WireHeader Header;
+        unsigned short FiringEntity;
+        unsigned short TargetEntity;
+        unsigned short MunitionEntity;
+        @key unsigned short EventNumber;
+        double XMeters;
+        double YMeters;
+        double ZMeters;
+        float VxMps;
+        float VyMps;
+        float VzMps;
+        octet MunitionKind;
+        unsigned short WarheadKind;
+        unsigned short FuseKind;
+        unsigned short Quantity;
+        unsigned short Rate;
+        float RangeMeters;
+    };
+
+    // ------------------------------------------------------------------------
+    // DetonationEvent - clearance/weapons/detonation
+    // Mirrors DIS Detonation PDU (Type 3, §7.3.4). Pairs with FireEvent by
+    // EventNumber - same key so DDS naturally correlates them by instance.
+    // ------------------------------------------------------------------------
+    struct DetonationEvent
+    {
+        WireHeader Header;
+        unsigned short FiringEntity;
+        unsigned short TargetEntity;
+        unsigned short MunitionEntity;
+        @key unsigned short EventNumber;
+        double XMeters;
+        double YMeters;
+        double ZMeters;
+        float VxMps;
+        float VyMps;
+        float VzMps;
+        octet MunitionKind;
+        unsigned short WarheadKind;
+        unsigned short FuseKind;
+        unsigned short Quantity;
+        unsigned short Rate;
+        octet DetonationResult;                  // §7.3.4 table 7-4
+    };
+
+    // ------------------------------------------------------------------------
+    // EmissionSnapshot - clearance/radar/emission
+    // Mirrors DIS Emission PDU (Type 23, §7.6.2). One instance per active
+    // radar, keyed by EmittingEntity. Painted entities carried as a
+    // variable-length sequence - DDS handles the wire framing.
+    // ------------------------------------------------------------------------
+    struct EmissionSnapshot
+    {
+        WireHeader Header;
+        @key unsigned short EmittingEntity;
+        double PositionMetersX;
+        double PositionMetersY;
+        double PositionMetersZ;
+        unsigned short EmitterName;              // Annex E, e.g. 4830 = ASR-9
+        octet EmitterFunction;                   // Annex E, e.g. 3 = Surveillance
+        float FrequencyLowHz;
+        float FrequencyHighHz;
+        float EffectiveRadiatedPowerDbm;
+        float PulseRepetitionFreqHz;
+        float PulseWidthMicrosec;
+        float BeamAzimuthRad;
+        octet BeamFunction;                      // Annex E, e.g. 2 = Search
+        sequence<unsigned short> PaintedEntityNumbers;
+    };
+
+    // ------------------------------------------------------------------------
+    // TransmitterState - clearance/radio/transmitter
+    // Mirrors DIS Transmitter PDU (Type 25, §7.7.2). Heartbeat per active
+    // radio per tick. Keyed by (OwnerEntity, RadioId) via a composite key
+    // in the participant's discovery info - see publisher config. For MVP
+    // we key on OwnerEntity since RadioId is always 1 in the current sim.
+    // ------------------------------------------------------------------------
+    struct TransmitterState
+    {
+        WireHeader Header;
+        @key unsigned short OwnerEntity;
+        unsigned short RadioId;
+        unsigned long long FrequencyHz;          // 121.500 MHz = 121500000
+        float BandwidthHz;
+        float PowerDbm;
+        octet TransmitState;                     // 0=off 1=on-idle 2=on-transmitting
+        double AntennaXMeters;
+        double AntennaYMeters;
+        double AntennaZMeters;
+    };
+
+    // ------------------------------------------------------------------------
+    // SignalEvent - clearance/radio/signal
+    // Mirrors DIS Signal PDU (Type 26, §7.7.3). Fires on each transcribed
+    // radio transmission. Data field is raw binary payload (ASCII transcript
+    // in CLEARANCE), variable length. DDS handles the framing.
+    // ------------------------------------------------------------------------
+    struct SignalEvent
+    {
+        WireHeader Header;
+        @key unsigned short OwnerEntity;
+        unsigned short RadioId;
+        sequence<octet> Data;
+    };
+};
