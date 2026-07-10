@@ -70,7 +70,7 @@ type kind/domain, dead reckoning parameters.
 
 ## Test coverage
 
-**44 automation test cases** covering **61 REQ-IDs** across six
+**52 automation test cases** covering **61 REQ-IDs** across six
 domains, tagged in each test's leading comment and runnable via
 `Automation RunTests Clearance.*` in the UE Session Frontend.
 
@@ -94,9 +94,9 @@ integration / manual) with five manual verification procedures
 (Wireshark capture, RTI Admin Console, in-process subscriber,
 two-federate live, automation full pass).
 
-![All 44 automation tests passing in UE Session Frontend](docs/img/tests_passing.png)
+![All 52 automation tests passing in UE Session Frontend](docs/img/tests_passing.png)
 
-*44 out of 44 tests pass locally via `Automation RunTests Clearance.*`
+*52 out of 52 tests pass locally via `Automation RunTests Clearance.*`
 in the UE Session Frontend. Each test in the list corresponds to
 one or more REQ-IDs in `REQUIREMENTS.md`, so a passing run is a
 receipt against the requirements table above.*
@@ -337,9 +337,15 @@ Full technical walkthrough of the federation stack against a live
 CLEARANCE session: DIS PDUs decoded live in Wireshark, DDS
 participant discovered in RTI Administration Console, OpenRTI
 federate joining an RPR-FOM 2.0 federation, all four wires ticking
-side by side in the instructor UI.
+side by side in the instructor UI, and a two-federate live demo
+where two independent CLEARANCE processes share an airspace picture
+over all four wires simultaneously.
 
-> *link goes here after upload*
+https://youtu.be/u7qeIkqkt4s
+
+Companion Model-Based Design video from the same simulator (Simulink
+autopilot flying every aircraft, Simulink radar signal chain
+detecting every one): https://youtu.be/nqjFOimsYHw
 
 ## License
 
