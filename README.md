@@ -6,16 +6,13 @@ a UE5 air traffic control and defence training simulator I built.
 
 - **IEEE 1278.1 DIS** over UDP multicast, in-house wire codec
 - **OMG DDS** via eProsima Fast DDS 3.6.1
-- **OMG DDS** via RTI Connext DDS 7.7.0 (commercial parallel runtime)
-- **IEEE 1516-2010 HLA-Evolved** via OpenRTI 0.10.0, RPR-FOM 2.0 base
+- **OMG DDS** via RTI Connext 7.7.0 (commercial parallel runtime)
+- **IEEE 1516-2010 HLA-Evolved** via OpenRTI 0.10.0, RPR-FOM 2.0 extension
 
 All four run concurrently against the same authoritative airspace
-state. The same aircraft state hits Wireshark as a spec-compliant
-Entity State PDU, appears in RTI Administration Console as a
-discoverable DomainParticipant with six DataWriters, and lands in
+state. The same aircraft state decodes field-by-field in Wireshark's DIS dissector as an Entity State PDU, byte-verified against the spec, appears in RTI Administration Console as a discoverable DomainParticipant with six DataWriters, and lands in
 an HLA federation as an `ATCManagedAircraft` object with encoded
-attributes. Same tick, four wires, four vendor runtimes, zero
-overlap between them.
+attributes. Same tick, four wires, four vendor runtimes, no shared serialisation code between them.
 
 This is a read-only mirror of the four federation modules as they
 live inside CLEARANCE. It does not build on its own. It exists so
@@ -24,8 +21,8 @@ project.
 
 Companion Model-Based Design repos from the same simulator:
 
-- Simulink cascade autopilot  https://github.com/abdullahabduljabbarab/autopilot-mbd
-- Simulink radar signal chain https://github.com/abdullahabduljabbarab/radar-mbd
+- [Simulink cascade autopilot](https://github.com/abdullahabduljabbarab/autopilot-mbd)
+- [Simulink radar signal chain](https://github.com/abdullahabduljabbarab/radar-mbd)
 
 ## The four wires
 
