@@ -52,10 +52,9 @@ Six IEEE 1278.1a-1998 PDU types, every one spec-compliant, every one byte-for-by
 | Entity State   | 1    | Entity Information/Interaction        | §5.3.3.1  | 144 bytes (no variable parameters)  | 1                |
 | Fire           | 2    | Warfare                   | §5.3.4.1  | 96 bytes   | 2                |
 | Detonation     | 3    | Warfare                   | §5.3.4.2  | 104 bytes (no variable parameters)  | 2                |
-| Emission       | 23   | Distributed Emission Regeneration | §5.3.7.1  | 100 + tracks/jam records | 3    |
+| Electromagnetic Emission       | 23   | Distributed Emission Regeneration | §5.3.7.1  | 100 + tracks/jam records | 3    |
 | Transmitter    | 25   | Radio Communications      | §5.3.8.1  | 104 + modulation parameters | 1        |
-| Signal         | 26   | Radio Communications      | §5.3.8.2
-1  | fixed head + payload padded to 32-bit boundary | 1 |
+| Signal         | 26   | Radio Communications      | §5.3.8.2  | fixed head + payload padded to 32-bit boundary | 1 |
 
 All six live-verified against Wireshark's built-in DIS dissector.
 No custom dissector, no wire-shim. The dissector decodes every field of every PDU. For Entity State that means header, entity ID triple, ECEF position, entity type kind/domain and dead reckoning parameters, all expanded in the packet tree.
