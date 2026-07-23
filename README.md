@@ -12,7 +12,7 @@ a UE5 air traffic control and defence training simulator I built.
 All four run concurrently against the same authoritative airspace
 state. The same aircraft state decodes field-by-field in Wireshark's DIS dissector as an Entity State PDU, byte-verified against the spec, appears in RTI Administration Console as a discoverable DomainParticipant with six DataWriters, and lands in
 an HLA federation as an `ATCManagedAircraft` object with encoded
-attributes. Same tick, four wires, four vendor runtimes, no shared serialisation code between them.
+attributes. Same tick, four wires, three vendor runtimes plus an in-house codec, no shared serialisation code between them.
 
 This is a read-only mirror of the four federation modules as they
 live inside CLEARANCE. It does not build on its own. It exists so
