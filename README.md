@@ -41,10 +41,7 @@ Companion Model-Based Design repos from the same simulator:
                                                     RPR FOM 2.0 extension via FOM Module XML
 ```
 
-Each emitter is independently start/stop-able from the operator
-console. Enabling DDS does not enable DIS. Enabling all four does
-not double-encode the snapshot; they read from the same source
-struct and marshal separately.
+Each wire starts and stops independently, from either the instructor panel's FEDERATION section or the console commands. Enabling all four does not rebuild the snapshot four times; the airspace state is captured once per tick and each wire marshals its own copy from that same source struct.
 
 ## DIS PDU coverage
 
