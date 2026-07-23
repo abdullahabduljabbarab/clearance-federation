@@ -4,7 +4,7 @@ Four independent simulation-interoperability wires publishing the
 same six data primitives from a single sim tick out of **CLEARANCE**,
 a UE5 air traffic control and defence training simulator I built.
 
-- **IEEE 1278.1a-1998** DIS (protocol version 6) over UDP multicast, in-house wire codec
+- **IEEE 1278.1-2012** DIS (protocol version 6) over UDP multicast, in-house wire codec
 - **OMG DDS** via eProsima Fast DDS 3.6.1
 - **OMG DDS** via RTI Connext 7.7.0 (commercial parallel runtime)
 - **IEEE 1516-2010 HLA Evolved** via OpenRTI 0.10.0, RPR FOM 2.0 extension
@@ -27,7 +27,7 @@ Companion Model-Based Design repos from the same simulator:
 ## The four wires
 
 ```
-                            +--> ClearanceDIS   ->  UDP multicast (IEEE 1278.1a-1998)
+                            +--> ClearanceDIS   ->  UDP multicast (IEEE 1278.1a-2012)
                             |                       6 PDU types, in-house spec-compliant codec
                             |
                             +--> ClearanceDDS   ->  RTPS via Fast DDS 3.6.1
@@ -49,12 +49,12 @@ Six IEEE 1278.1a-1998 PDU types, every one spec-compliant, every one byte-for-by
 
 | PDU type       | Type | Family                    | Spec §  | Wire size | Round-trip tests |
 |----------------|------|---------------------------|---------|------------|------------------|
-| Entity State   | 1    | Entity Information/Interaction        | §5.3.3.1  | 144 bytes (no variable parameters)  | 1                |
-| Fire           | 2    | Warfare                   | §5.3.4.1  | 96 bytes   | 2                |
-| Detonation     | 3    | Warfare                   | §5.3.4.2  | 104 bytes (no variable parameters)  | 2                |
-| Electromagnetic Emission       | 23   | Distributed Emission Regeneration | §5.3.7.1  | 100 + tracks/jam records | 3    |
-| Transmitter    | 25   | Radio Communications      | §5.3.8.1  | 104 + modulation parameters | 1        |
-| Signal         | 26   | Radio Communications      | §5.3.8.2  | fixed head + payload padded to 32-bit boundary | 1 |
+| Entity State   | 1    | Entity Information/Interaction        | §7.2.2  | 144 bytes (no variable parameters)  | 1                |
+| Fire           | 2    | Warfare                   | §7.3.2  | 96 bytes   | 2                |
+| Detonation     | 3    | Warfare                   | §7.3.3  | 104 bytes (no variable parameters)  | 2                |
+| Emission       | 23   | Distributed Emission Regeneration | §7.6.2  | 100 + tracks/jam records | 3    |
+| Transmitter    | 25   | Radio Communications      | §7.7.2  | 104 + modulation parameters | 1        |
+| Signal         | 26   | Radio Communications      | §7.7.3  | fixed head + payload padded to 32-bit boundary | 1 |
 
 All six live-verified against Wireshark's built-in DIS dissector.
 No custom dissector, no wire-shim. The dissector decodes every field of every PDU. For Entity State that means header, entity ID triple, ECEF position, entity type kind/domain and dead reckoning parameters, all expanded in the packet tree.
@@ -67,6 +67,8 @@ domains, tagged in each test's leading comment and runnable via
 
 | Test file                                | REQ-IDs covered       | Scope                                                              |
 |------------------------------------------|-----------------------|--------------------------------------------------------------------|
+
+| `ClearanceDISEntityStateTests.cpp`          | REQ-DIS-001..004      | Entity State PDU round-trip + ForceId at spec offset 18                |
 | `ClearanceDISEmissionTests.cpp`          | REQ-DIS-011..014      | Emission PDU round-trip + malformed rejection                     |
 | `ClearanceDISFireDetonationTests.cpp`    | REQ-DIS-005..010      | Fire (Type 2) + Detonation (Type 3) round-trips                    |
 | `ClearanceDISSignalTests.cpp`            | REQ-DIS-019..022      | Signal PDU padding + operator-entity routing                       |
@@ -99,8 +101,7 @@ receipt against the requirements table above.*
 ![CLEARANCE Instructor Station federation panel with all four wires enabled](docs/img/federation_panel.png)
 
 *All four wires running against the same running sim. DIS emitting
-686 packets/sec to multicast 224.0.0.1:3000, DDS + RTI publishing
-on domain 0, HLA federate joined to `CLEARANCE` federation via
+686 packets/sec to multicast 224.0.0.1:3000, Fast DDS publishing on domain 0 and Connext on domain 1, HLA federate joined to `CLEARANCE` federation via
 OpenRTI's `rtinode.exe` at `127.0.0.1:14321`. Each wire independently
 start/stop-able from the panel with a start button, stop button,
 status dot, and live rate counter.*
