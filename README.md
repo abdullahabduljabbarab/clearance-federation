@@ -7,7 +7,7 @@ a UE5 air traffic control and defence training simulator I built.
 - **IEEE 1278.1 DIS** over UDP multicast, in-house wire codec
 - **OMG DDS** via eProsima Fast DDS 3.6.1
 - **OMG DDS** via RTI Connext 7.7.0 (commercial parallel runtime)
-- **IEEE 1516-2010 HLA-Evolved** via OpenRTI 0.10.0, RPR-FOM 2.0 extension
+- **IEEE 1516-2010 HLA Evolved** via OpenRTI 0.10.0, RPR FOM 2.0 extension
 
 All four run concurrently against the same authoritative airspace
 state. The same aircraft state decodes field-by-field in Wireshark's DIS dissector as an Entity State PDU, byte-verified against the spec, appears in RTI Administration Console as a discoverable DomainParticipant with six DataWriters, and lands in
@@ -45,23 +45,19 @@ Each wire starts and stops independently, from either the instructor panel's FED
 
 ## DIS PDU coverage
 
-Six IEEE 1278.1 PDU types, every one spec-compliant, every one
-byte-for-byte fixed-length verified against `dis_wire_format.cpp`
-round-trip tests.
+Six IEEE 1278.1 PDU types, every one spec-compliant, every one byte-for-byte verified against `dis_wire_format.cpp` round-trip tests. Fixed-length fields sit at their spec offsets, and variable-length records are included where the PDU defines them.
 
-| PDU type       | Type | Family                    | Spec §  | Fixed size | Round-trip tests |
+| PDU type       | Type | Family                    | Spec §  | Wire size | Round-trip tests |
 |----------------|------|---------------------------|---------|------------|------------------|
-| Entity State   | 1    | Entity Information        | §7.3.4  | 144 bytes  | 1                |
-| Fire           | 2    | Warfare                   | §7.3.3  | 96 bytes   | 2                |
-| Detonation     | 3    | Warfare                   | §7.3.4  | 104 bytes  | 2                |
-| Emission       | 23   | Distributed Emission Regen| §7.6.2  | 100 + tracks/jam records | 3    |
-| Transmitter    | 25   | Radio Communications      | §7.7.2  | fixed head + record | 1        |
-| Signal         | 26   | Radio Communications      | §7.7.3  | fixed head + payload padded to 32-bit boundary per §7.7.3.9 | 1 |
+| Entity State   | 1    | Entity Information/Interaction        | §7.2.2  | 144 bytes (no variable parameters)  | 1                |
+| Fire           | 2    | Warfare                   | §7.3.2  | 96 bytes   | 2                |
+| Detonation     | 3    | Warfare                   | §7.3.3  | 104 bytes (no variable parameters)  | 2                |
+| Emission       | 23   | Distributed Emission Regeneration | §7.6.2  | 100 + tracks/jam records | 3    |
+| Transmitter    | 25   | Radio Communications      | §7.7.2  | 104 + modulation parameters | 1        |
+| Signal         | 26   | Radio Communications      | §7.7.3  | fixed head + payload padded to 32-bit boundary | 1 |
 
 All six live-verified against Wireshark's built-in DIS dissector.
-No custom dissector, no wire-shim. The dissector decodes every
-field of every PDU: header, entity ID triple, ECEF position, entity
-type kind/domain, dead reckoning parameters.
+No custom dissector, no wire-shim. The dissector decodes every field of every PDU. For Entity State that means header, entity ID triple, ECEF position, entity type kind/domain and dead reckoning parameters, all expanded in the packet tree.
 
 ## Test coverage
 
