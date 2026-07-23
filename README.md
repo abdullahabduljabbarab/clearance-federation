@@ -27,17 +27,18 @@ Companion Model-Based Design repos from the same simulator:
 ## The four wires
 
 ```
-                                +--> ClearanceDIS  ->  UDP multicast (IEEE 1278.1)
-                                |    6 PDU types, in-house spec-compliant codec
-                                |
-   Sim tick     Snapshot        +--> ClearanceDDS  ->  RTPS via Fast DDS 3.6.1
-   (server)   ----------->  -+--+    6 topics, OMG IDL schema
-                                |
-                                +--> ClearanceRTI  ->  RTPS via RTI Connext 7.7.0
-                                |    Same 6 topics, commercial parallel runtime
-                                |
-                                +--> ClearanceHLA  ->  IEEE 1516-2010 via OpenRTI 0.10.0
-                                     RPR-FOM 2.0 extension via FOM Module XML
+                            +--> ClearanceDIS   ->  UDP multicast (IEEE 1278.1)
+                            |                       6 PDU types, in-house spec-compliant codec
+                            |
+                            +--> ClearanceDDS   ->  RTPS via Fast DDS 3.6.1
+   Sim tick    Snapshot     |                       6 topics, OMG IDL schema
+   (server)  --------------+
+                            |
+                            +--> ClearanceRTI   ->  RTPS via RTI Connext 7.7.0
+                            |                       Same 6 topics, commercial parallel runtime
+                            |
+                            +--> ClearanceHLA   ->  IEEE 1516-2010 via OpenRTI 0.10.0
+                                                    RPR FOM 2.0 extension via FOM Module XML
 ```
 
 Each emitter is independently start/stop-able from the operator
