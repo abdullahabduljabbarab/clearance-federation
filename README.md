@@ -150,13 +150,7 @@ reusable outside CLEARANCE.*
 
 ![Fast DDS participant discovered by RTI Administration Console](docs/img/rti_console_fastdds_discovery.png)
 
-*The Fast DDS side of CLEARANCE (five DataWriters, five DataReaders
-for the in-process demo subscriber) discovered by RTI Administration
-Console. Product Version reads 0.0 and there is no RTI Vendor line
-because this participant is not RTI Connext, it's eProsima Fast DDS
-speaking standard OMG DDS-RTPS 2.5 on the wire. The fact that RTI's
-tool discovers it and walks its topology is proof the schema is
-vendor-neutral OMG DDS, not accidentally Fast-DDS-specific.*
+*The Fast DDS side of CLEARANCE (six DataWriters, one per topic, and six DataReaders for the in-process demo subscriber) discovered by RTI Administration Console. Product Version reads 0.0 and there is no RTI Vendor line because this participant is not RTI Connext, it's eProsima Fast DDS speaking standard OMG DDS-RTPS on the wire. The fact that RTI's tool discovers it and walks its topology is evidence the schema is vendor-neutral OMG DDS, not accidentally Fast-DDS-specific.*
 
 ![AirspaceTelemetry.idl schema](docs/img/dds_idl.png)
 
