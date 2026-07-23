@@ -67,7 +67,6 @@ domains, tagged in each test's leading comment and runnable via
 
 | Test file                                | REQ-IDs covered       | Scope                                                              |
 |------------------------------------------|-----------------------|--------------------------------------------------------------------|
-
 | `ClearanceDISEntityStateTests.cpp`          | REQ-DIS-001..004      | Entity State PDU round-trip + ForceId at spec offset 18                |
 | `ClearanceDISEmissionTests.cpp`          | REQ-DIS-011..014      | Emission PDU round-trip + malformed rejection                     |
 | `ClearanceDISFireDetonationTests.cpp`    | REQ-DIS-005..010      | Fire (Type 2) + Detonation (Type 3) round-trips                    |
