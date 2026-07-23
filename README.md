@@ -108,7 +108,7 @@ receipt against the requirements table above.*
 ![CLEARANCE Instructor Station federation panel with all four wires enabled](docs/img/federation_panel.png)
 
 *All four wires running against the same running sim. DIS emitting
-1263 packets/sec to multicast 224.0.0.1:3000, DDS + RTI publishing
+686 packets/sec to multicast 224.0.0.1:3000, DDS + RTI publishing
 on domain 0, HLA federate joined to `CLEARANCE` federation via
 OpenRTI's `rtinode.exe` at `127.0.0.1:14321`. Each wire independently
 start/stop-able from the panel with a start button, stop button,
