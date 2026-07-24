@@ -125,7 +125,7 @@ codecs themselves never see it.
 Six PDU types, all spec-compliant, all live-verified against
 Wireshark's built-in DIS dissector.
 
-### Entity State PDU (Type 1, §7.3.4, 144 bytes)
+### Entity State PDU (Type 1, §7.3.2, 144 bytes)
 
 Every aircraft in the sim broadcasts one per tick with:
 - Position in world coordinates (ECEF metres)
@@ -140,7 +140,7 @@ A Wireshark-equipped observer sees every aircraft as a proper DIS
 entity with a callsign and live position track. Receivable by any
 DIS federate on the network.
 
-### Fire PDU (Type 2, §7.3.3, 96 bytes)
+### Fire PDU (Type 2, §7.4.3, 96 bytes)
 
 When the operator scrambles an interceptor, each fighter emits a
 Fire PDU containing:
@@ -152,7 +152,7 @@ Fire PDU containing:
 
 Paired with the later Detonation PDU by Event ID.
 
-### Detonation PDU (Type 3, §7.3.4, 104 bytes)
+### Detonation PDU (Type 3, §7.4.4, 104 bytes)
 
 When the intercept resolves, each fighter emits a Detonation PDU
 with the same Firing / Target / Munition / Event IDs as the earlier
@@ -168,9 +168,10 @@ the event, Detonation closes it, both PDUs pair by Event ID.
 Every active radar broadcasts one per tick with:
 - Emitting entity ID
 - Radar fingerprint: centre frequency (Hz), PRF (Hz), pulse width
-  (microseconds), effective radiated power (dBm), emitter
-  catalogue name (e.g. 4830 = ASR-9 civil surveillance), emitter
-  function code (e.g. 3 = Early Warning / Surveillance)
+  (microseconds), effective radiated power (dBm), emitter catalogue
+  name (SISO-REF-010 UID 75, e.g. 8790 = ASR-9 civil airport
+  surveillance), emitter function code (SISO-REF-010 UID 76, e.g.
+  22 = Air Traffic Control)
 - Current beam pointing direction (azimuth radians)
 - Track/Jam list: entity ID of every aircraft the radar is
   currently painting
@@ -180,13 +181,13 @@ Radar Warning Receiver can tell whether a CLEARANCE radar is
 currently tracking IT. That is the foundation of Electronic
 Intelligence.
 
-### Transmitter PDU (Type 25, §7.7.2)
+### Transmitter PDU (Type 25, §7.7.2, 104 bytes)
 
 Every active radio broadcasts one Transmitter PDU per tick with:
 - Radio Reference ID (owner entity, hashed from callsign via FNV-1a)
 - Radio ID (which radio on the entity)
-- Radio Entity Type: Kind 7 (Radio), Domain 2 (Air), Category 5
-  (VHF/UHF - the standard airliner comms profile)
+- Radio Entity Type: Kind 7 (Radio), Domain 2 (Air), plus Category /
+  Nomenclature per SISO EBV
 - Transmit State (0 off, 1 on-idle, 2 on-transmitting)
 - Antenna Location (ECEF metres, tracks aircraft position)
 - Frequency (Hz, 64-bit, defaulted to 121.5 MHz international ATC
@@ -198,7 +199,7 @@ Heartbeat companion to Signal. Federation receivers learn "there
 is a radio at this position tuned to 121.5 MHz on VHF AM" from the
 Transmitter stream, then map subsequent Signal PDUs to it.
 
-### Signal PDU (Type 26, §7.7.3)
+### Signal PDU (Type 26, §7.7.3, fixed 32-byte header + padded payload)
 
 Every transcribed radio transmission (operator commands, pilot
 readbacks, controller injects, facility broadcasts) emits a Signal

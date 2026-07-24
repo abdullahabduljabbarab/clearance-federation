@@ -68,7 +68,7 @@ namespace
 		E.RangeMeters  = 20000.f;
 
 		const auto wire = ClearanceDIS::BuildFirePDU(E, make_params());
-		expect("length is fixed 96 bytes (spec §7.3.3)", wire.size() == 96);
+		expect("length is fixed 96 bytes (spec §7.4.3)", wire.size() == 96);
 		expect("PDU type byte is 2 (Fire)",              wire[2] == 2);
 		expect("Protocol family byte is 2 (Warfare)",    wire[3] == 2);
 
@@ -112,7 +112,7 @@ namespace
 		D.DetonationResult = 2;
 
 		const auto wire = ClearanceDIS::BuildDetonationPDU(D, make_params());
-		expect("length is fixed 104 bytes (spec §7.3.4)", wire.size() == 104);
+		expect("length is fixed 104 bytes (spec §7.4.4)", wire.size() == 104);
 		expect("PDU type byte is 3 (Detonation)",         wire[2] == 3);
 
 		ClearanceDIS::FDetonationEvent out;
@@ -142,7 +142,7 @@ namespace
 			S.ForceId           = force;
 			S.EntityKind        = 1;
 			S.EntityDomain      = 2;
-			S.EntityCountry     = 225;
+			S.EntityCountry     = 224;
 			S.EntityCategory    = 1;
 			S.EntitySubcategory = 0;
 			S.EntitySpecific    = 0;
@@ -155,7 +155,7 @@ namespace
 			const auto wire = ClearanceDIS::BuildEntityStatePDU(S, make_params());
 			char label[80];
 			std::snprintf(label, sizeof(label),
-				"ForceId=%u written at byte 18 per §7.3.4.6", (unsigned)force);
+				"ForceId=%u written at byte 18 per §7.3.2.6", (unsigned)force);
 			expect(label, wire.size() > 18 && wire[18] == force);
 		}
 	}
@@ -172,7 +172,7 @@ namespace
 		S.ForceId           = 1;
 		S.EntityKind        = 1;
 		S.EntityDomain      = 2;
-		S.EntityCountry     = 225;
+		S.EntityCountry     = 224;
 		S.EntityCategory    = 1;
 		S.EntitySubcategory = 0;
 		S.EntitySpecific    = 0;
@@ -183,9 +183,9 @@ namespace
 		S.Marking = "TEST01";
 
 		const auto wire = ClearanceDIS::BuildEntityStatePDU(S, make_params());
-		expect("length is fixed 144 bytes (spec §7.3.4)", wire.size() == 144);
+		expect("length is fixed 144 bytes (spec §7.3.2)", wire.size() == 144);
 		expect("PDU type byte is 1 (Entity State)",       wire[2] == 1);
-		expect("Protocol version byte is 6 (IEEE 1278.1A-1998)", wire[0] == 6);
+		expect("Protocol version byte is 7 (IEEE 1278.1-2012)", wire[0] == 7);
 	}
 
 	// ------------------------------------------------------------------
@@ -199,15 +199,15 @@ namespace
 		ClearanceDIS::FEmissionSnapshot S;
 		S.EmittingEntity  = ClearanceDIS::HashCallsignToEntityNumber("ATCTOWER");
 		S.PositionMetersX = 100.0; S.PositionMetersY = 200.0; S.PositionMetersZ = 30.0;
-		S.EmitterName     = 4830;    // ASR-9 civil surveillance
-		S.EmitterFunction = 3;
+		S.EmitterName     = 8790;    // 8790 = ASR-9 civil airport surveillance (SISO-REF-010 UID 75)
+		S.EmitterFunction = 22;   // Air Traffic Control (SISO-REF-010 UID 76)
 		S.FrequencyLowHz            = 2.7e9f;
 		S.FrequencyHighHz           = 2.9e9f;
 		S.EffectiveRadiatedPowerDbm = 78.f;
 		S.PulseRepetitionFreqHz     = 1200.f;
 		S.PulseWidthMicrosec        = 1.f;
 		S.BeamAzimuthRad = 0.f;
-		S.BeamFunction   = 2;
+		S.BeamFunction   = 1;     // Search (SISO-REF-010 UID 78)
 		S.PaintedEntityNumbers = {
 			ClearanceDIS::HashCallsignToEntityNumber("DLH101"),
 			ClearanceDIS::HashCallsignToEntityNumber("BAW472"),

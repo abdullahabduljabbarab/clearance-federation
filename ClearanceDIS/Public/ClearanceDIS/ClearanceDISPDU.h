@@ -3,8 +3,8 @@
 // format library. Public API for the ClearanceDIS module.
 //
 // Six PDU types across four protocol families:
-//   Entity Information family (§7.3.4)   - Entity State PDU  (Type 1)
-//   Warfare family (§7.3.3 / §7.3.4)     - Fire (2), Detonation (3)
+//   Entity Information family (§7.3.2)   - Entity State PDU  (Type 1)
+//   Warfare family (§7.4.3 / §7.4.4)     - Fire (2), Detonation (3)
 //   Distributed Emission family (§7.6.2) - Emission PDU      (Type 23)
 //   Radio Communications family (§7.7)   - Transmitter (25), Signal (26)
 //
@@ -71,7 +71,7 @@ namespace ClearanceDIS
 	//  any unit conversion from sim-native units at the module boundary.
 	// ========================================================================
 
-	// Entity State PDU (Type 1, §7.3.4)
+	// Entity State PDU (Type 1, §7.3.2)
 	struct FEntityState
 	{
 		std::string   Marking;                    // ASCII, up to 11 chars used
@@ -79,7 +79,7 @@ namespace ClearanceDIS
 		std::uint8_t  ForceId           = 0;      // 0=other 1=friendly 2=hostile 3=neutral
 		std::uint8_t  EntityKind        = 1;      // Annex A: 1=Platform
 		std::uint8_t  EntityDomain      = 2;      // 2=Air
-		std::uint16_t EntityCountry     = 225;    // 225=US
+		std::uint16_t EntityCountry     = 224;    // 224=UK/GBR
 		std::uint8_t  EntityCategory    = 1;
 		std::uint8_t  EntitySubcategory = 0;
 		std::uint8_t  EntitySpecific    = 0;
@@ -89,7 +89,7 @@ namespace ClearanceDIS
 		float         PsiRad  = 0.f, ThetaRad = 0.f, PhiRad = 0.f;
 	};
 
-	// Fire PDU (Type 2, §7.3.3)
+	// Fire PDU (Type 2, §7.4.3)
 	struct FFireEvent
 	{
 		std::uint16_t FiringEntity   = 0;
@@ -106,7 +106,7 @@ namespace ClearanceDIS
 		float         RangeMeters  = 0.f;
 	};
 
-	// Detonation PDU (Type 3, §7.3.4). Pairs with Fire by EventNumber.
+	// Detonation PDU (Type 3, §7.4.4). Pairs with Fire by EventNumber.
 	struct FDetonationEvent
 	{
 		std::uint16_t FiringEntity     = 0;
@@ -120,7 +120,7 @@ namespace ClearanceDIS
 		std::uint16_t FuseKind         = 1000;
 		std::uint16_t Quantity         = 1;
 		std::uint16_t Rate             = 0;
-		std::uint8_t  DetonationResult = 1;       // §7.3.4 table 7-4
+		std::uint8_t  DetonationResult = 1;       // §7.4.4 table 7-4
 	};
 
 	// Emission PDU (Type 23, §7.6.2). One radar's full snapshot.
@@ -128,15 +128,15 @@ namespace ClearanceDIS
 	{
 		std::uint16_t EmittingEntity = 0;
 		double        PositionMetersX = 0.0, PositionMetersY = 0.0, PositionMetersZ = 0.0;
-		std::uint16_t EmitterName    = 4830;      // ASR-9 civil surveillance
-		std::uint8_t  EmitterFunction = 3;        // Surveillance
+		std::uint16_t EmitterName    = 8790;      // 8790 = ASR-9 civil airport surveillance (SISO-REF-010 UID 75)
+		std::uint8_t  EmitterFunction = 22;       // Air Traffic Control (SISO-REF-010 UID 76)
 		float         FrequencyLowHz     = 0.f;
 		float         FrequencyHighHz    = 0.f;
 		float         EffectiveRadiatedPowerDbm = 0.f;
 		float         PulseRepetitionFreqHz     = 0.f;
 		float         PulseWidthMicrosec        = 0.f;
 		float         BeamAzimuthRad     = 0.f;
-		std::uint8_t  BeamFunction       = 2;     // Search
+		std::uint8_t  BeamFunction       = 1;     // Search (SISO-REF-010 UID 78)
 		std::vector<std::uint16_t> PaintedEntityNumbers;
 	};
 

@@ -111,7 +111,7 @@ namespace
 		std::uint8_t PduType, std::uint8_t ProtoFamily, std::uint16_t PduLength,
 		double SimTimeSeconds)
 	{
-		WriteU8(B, 6);                              // Protocol version (6 = IEEE 1278.1A-1998)
+		WriteU8(B, 7);                              // Protocol version (7 = IEEE 1278.1-2012)
 		WriteU8(B, ExerciseId);
 		WriteU8(B, PduType);
 		WriteU8(B, ProtoFamily);
@@ -142,7 +142,7 @@ namespace
 namespace ClearanceDIS
 {
 	// ============================================================================
-	// Entity State PDU (Type 1) - §7.3.4
+	// Entity State PDU (Type 1) - §7.3.2
 	// ============================================================================
 	std::vector<std::uint8_t> BuildEntityStatePDU(const FEntityState& S, const FWireParams& P)
 	{
@@ -210,7 +210,7 @@ namespace ClearanceDIS
 	}
 
 	// ============================================================================
-	// Fire PDU (Type 2) - §7.3.3
+	// Fire PDU (Type 2) - §7.4.3
 	// ============================================================================
 	std::vector<std::uint8_t> BuildFirePDU(const FFireEvent& E, const FWireParams& P)
 	{
@@ -244,10 +244,10 @@ namespace ClearanceDIS
 		WriteDoubleBE(Out, E.YMeters);
 		WriteDoubleBE(Out, E.ZMeters);
 
-		// Burst Descriptor (§7.3.3 table 7-4)
+		// Burst Descriptor (§7.4.3 table 7-4)
 		WriteU8(Out, 2);                            // Kind = Munition
 		WriteU8(Out, 2);                            // Domain = Air
-		WriteU16BE(Out, 225);                       // Country = US
+		WriteU16BE(Out, 224);                       // Country = UK
 		WriteU8(Out, E.MunitionKind);
 		WriteU8(Out, 0);
 		WriteU8(Out, 0);
@@ -306,7 +306,7 @@ namespace ClearanceDIS
 	}
 
 	// ============================================================================
-	// Detonation PDU (Type 3) - §7.3.4
+	// Detonation PDU (Type 3) - §7.4.4
 	// ============================================================================
 	std::vector<std::uint8_t> BuildDetonationPDU(const FDetonationEvent& E, const FWireParams& P)
 	{
@@ -326,7 +326,7 @@ namespace ClearanceDIS
 		WriteFloatBE(Out, E.VxMps); WriteFloatBE(Out, E.VyMps); WriteFloatBE(Out, E.VzMps);
 		WriteDoubleBE(Out, E.XMeters); WriteDoubleBE(Out, E.YMeters); WriteDoubleBE(Out, E.ZMeters);
 
-		WriteU8(Out, 2); WriteU8(Out, 2); WriteU16BE(Out, 225);
+		WriteU8(Out, 2); WriteU8(Out, 2); WriteU16BE(Out, 224);
 		WriteU8(Out, E.MunitionKind); WriteU8(Out, 0); WriteU8(Out, 0); WriteU8(Out, 0);
 		WriteU16BE(Out, E.WarheadKind); WriteU16BE(Out, E.FuseKind);
 		WriteU16BE(Out, E.Quantity);    WriteU16BE(Out, E.Rate);
@@ -591,9 +591,9 @@ namespace ClearanceDIS
 		// Radio ID
 		WriteU16BE(Out, R.RadioId);
 
-		// Radio Entity Type (Kind 7 Radio, Domain 2 Air, Country 225 US, Cat 5 VHF/UHF)
-		WriteU8(Out, 7); WriteU8(Out, 2); WriteU16BE(Out, 225);
-		WriteU8(Out, 5); WriteU8(Out, 0); WriteU8(Out, 0); WriteU8(Out, 0);
+		// Radio Entity Type (Kind 7 Radio, Domain 2 Air, Country 224 UK, Cat 1 Voice Transmission/Reception)
+		WriteU8(Out, 7); WriteU8(Out, 2); WriteU16BE(Out, 224);
+		WriteU8(Out, 1); WriteU8(Out, 0); WriteU8(Out, 0); WriteU8(Out, 0);
 
 		// Transmit State + Input Source + Padding
 		WriteU8(Out, R.TransmitState);

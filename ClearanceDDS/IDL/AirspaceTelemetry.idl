@@ -39,7 +39,7 @@ module ClearanceDDS
 
     // ------------------------------------------------------------------------
     // AircraftState - clearance/aircraft/state
-    // Mirrors DIS Entity State PDU (Type 1, §7.3.4). Continuous stream at
+    // Mirrors DIS Entity State PDU (Type 1, §7.3.2). Continuous stream at
     // the sim tick rate, one instance per aircraft in the sector.
     // The @key annotation makes EntityNumber the instance identifier so a
     // subscriber can track per-aircraft history natively via DDS instances.
@@ -77,7 +77,7 @@ module ClearanceDDS
 
     // ------------------------------------------------------------------------
     // FireEvent - clearance/weapons/fire
-    // Mirrors DIS Fire PDU (Type 2, §7.3.3). Fires on each SCRAMBLE launch.
+    // Mirrors DIS Fire PDU (Type 2, §7.4.3). Fires on each SCRAMBLE launch.
     // Event-driven, not continuous. EventNumber is the DDS instance key so
     // subscribers can dedupe and pair with Detonation on the same key.
     // ------------------------------------------------------------------------
@@ -104,7 +104,7 @@ module ClearanceDDS
 
     // ------------------------------------------------------------------------
     // DetonationEvent - clearance/weapons/detonation
-    // Mirrors DIS Detonation PDU (Type 3, §7.3.4). Pairs with FireEvent by
+    // Mirrors DIS Detonation PDU (Type 3, §7.4.4). Pairs with FireEvent by
     // EventNumber - same key so DDS naturally correlates them by instance.
     // ------------------------------------------------------------------------
     struct DetonationEvent
@@ -125,7 +125,7 @@ module ClearanceDDS
         unsigned short FuseKind;
         unsigned short Quantity;
         unsigned short Rate;
-        octet DetonationResult;                  // §7.3.4 table 7-4
+        octet DetonationResult;                  // §7.4.4 table 7-4
     };
 
     // ------------------------------------------------------------------------
@@ -141,15 +141,15 @@ module ClearanceDDS
         double PositionMetersX;
         double PositionMetersY;
         double PositionMetersZ;
-        unsigned short EmitterName;              // Annex E, e.g. 4830 = ASR-9
-        octet EmitterFunction;                   // Annex E, e.g. 3 = Surveillance
+        unsigned short EmitterName;              // SISO-REF-010 UID 75 (Emitter Name) enumeration
+        octet EmitterFunction;                   // SISO-REF-010 UID 76 (Emitter System Function); 22 = Air Traffic Control
         float FrequencyLowHz;
         float FrequencyHighHz;
         float EffectiveRadiatedPowerDbm;
         float PulseRepetitionFreqHz;
         float PulseWidthMicrosec;
         float BeamAzimuthRad;
-        octet BeamFunction;                      // Annex E, e.g. 2 = Search
+        octet BeamFunction;                      // SISO-REF-010 UID 78 (Beam Function); 1 = Search
         sequence<unsigned short> PaintedEntityNumbers;
     };
 

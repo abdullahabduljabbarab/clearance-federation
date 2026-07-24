@@ -39,28 +39,28 @@ requirement here traces to a specific section of IEEE 1278.1-2012.
 
 | ID          | Requirement                                                                                              | Verified by                                    | Source              |
 |-------------|----------------------------------------------------------------------------------------------------------|------------------------------------------------|---------------------|
-| REQ-DIS-001 | Entity State PDU serialises to exactly 144 bytes for a valid entity with no articulations                | `Clearance.DIS.EntityStatePDU.Roundtrip`       | IEEE 1278.1 §7.3.4  |
-| REQ-DIS-002 | Entity State PDU header carries PDU type 1 and protocol family 1 (Entity Information)                    | `Clearance.DIS.EntityStatePDU.Roundtrip`       | IEEE 1278.1 §5.2    |
-| REQ-DIS-003 | Entity State PDU header carries protocol version 7 (IEEE 1278.1-2012)                                    | `Clearance.DIS.EntityStatePDU.Roundtrip`       | IEEE 1278.1 §5.2.24 |
-| REQ-DIS-004 | Entity State PDU writes ForceId as a single uint8 at spec offset 18                                      | `Clearance.Federation.RPRFOM.ForceId.*`        | IEEE 1278.1 §7.3.4.6|
-| REQ-DIS-005 | Fire PDU serialises to exactly 96 bytes                                                                  | `Clearance.DIS.FirePDU.Roundtrip`              | IEEE 1278.1 §7.3.3  |
-| REQ-DIS-006 | Fire PDU round-trips firing entity, target entity, munition entity, event number, munition kind, warhead kind, fuse kind, quantity, range, world location, and velocity byte-exactly | `Clearance.DIS.FirePDU.Roundtrip`              | IEEE 1278.1 §7.3.3  |
-| REQ-DIS-007 | Fire PDU parser rejects buffers shorter than the fixed 96 bytes                                          | `Clearance.DIS.FirePDU.MalformedRejection`     | IEEE 1278.1 §7.3.3  |
-| REQ-DIS-008 | Detonation PDU serialises to exactly 104 bytes for a proximate-detonation result                         | `Clearance.DIS.DetonationPDU.Roundtrip`        | IEEE 1278.1 §7.3.4  |
-| REQ-DIS-009 | Detonation PDU round-trips firing / target / munition entity IDs matching the paired Fire event          | `Clearance.DIS.DetonationPDU.Roundtrip`        | IEEE 1278.1 §7.3.4  |
-| REQ-DIS-010 | Detonation PDU parser rejects buffers shorter than the fixed 104 bytes                                   | `Clearance.DIS.DetonationPDU.MalformedRejection` | IEEE 1278.1 §7.3.4|
-| REQ-DIS-011 | Emission PDU serialises the fixed 100-byte header plus one variable-length track/jam block per painted entity | `Clearance.DIS.EmissionPDU.Roundtrip`          | IEEE 1278.1 §7.6.2  |
-| REQ-DIS-012 | Emission PDU round-trips emitter name, function, frequency low/high, ERP, PRF, pulse width, and beam azimuth byte-exactly | `Clearance.DIS.EmissionPDU.Roundtrip`          | IEEE 1278.1 §7.6.2  |
-| REQ-DIS-013 | Emission PDU enumerates every painted entity's Entity ID in the Track/Jam list                           | `Clearance.DIS.EmissionPDU.Roundtrip`          | IEEE 1278.1 §7.6.2  |
-| REQ-DIS-014 | Emission PDU parser rejects buffers with truncated track/jam blocks                                      | `Clearance.DIS.EmissionPDU.MalformedRejection` | IEEE 1278.1 §7.6.2  |
-| REQ-DIS-015 | Transmitter PDU serialises to exactly 104 bytes                                                          | `Clearance.DIS.TransmitterPDU.Roundtrip`       | IEEE 1278.1 §7.7.2  |
-| REQ-DIS-016 | Transmitter PDU round-trips radio entity ID, transmit state, input source, modulation, transmit frequency, and transmit power | `Clearance.DIS.TransmitterPDU.Roundtrip`       | IEEE 1278.1 §7.7.2  |
+| REQ-DIS-001 | Entity State PDU serialises to exactly 144 bytes for a valid entity with no articulations                | `Clearance.DIS.EntityStatePDU.Roundtrip`       | IEEE 1278.1-2012 §7.3.2  |
+| REQ-DIS-002 | Entity State PDU header carries PDU type 1 and protocol family 1 (Entity Information)                    | `Clearance.DIS.EntityStatePDU.Roundtrip`       | IEEE 1278.1-2012 §5.2    |
+| REQ-DIS-003 | Entity State PDU header carries protocol version 7 (IEEE 1278.1-2012)                                    | `Clearance.DIS.EntityStatePDU.Roundtrip`       | IEEE 1278.1-2012 §5.2.24 |
+| REQ-DIS-004 | Entity State PDU writes ForceId as a single uint8 at spec offset 18                                      | `Clearance.Federation.RPRFOM.ForceId.*`        | IEEE 1278.1-2012 §7.3.2.6|
+| REQ-DIS-005 | Fire PDU serialises to exactly 96 bytes                                                                  | `Clearance.DIS.FirePDU.Roundtrip`              | IEEE 1278.1-2012 §7.4.3  |
+| REQ-DIS-006 | Fire PDU round-trips firing entity, target entity, munition entity, event number, munition kind, warhead kind, fuse kind, quantity, range, world location, and velocity byte-exactly | `Clearance.DIS.FirePDU.Roundtrip`              | IEEE 1278.1-2012 §7.4.3  |
+| REQ-DIS-007 | Fire PDU parser rejects buffers shorter than the fixed 96 bytes                                          | `Clearance.DIS.FirePDU.MalformedRejection`     | IEEE 1278.1-2012 §7.4.3  |
+| REQ-DIS-008 | Detonation PDU serialises to exactly 104 bytes for a proximate-detonation result                         | `Clearance.DIS.DetonationPDU.Roundtrip`        | IEEE 1278.1-2012 §7.4.4  |
+| REQ-DIS-009 | Detonation PDU round-trips firing / target / munition entity IDs matching the paired Fire event          | `Clearance.DIS.DetonationPDU.Roundtrip`        | IEEE 1278.1-2012 §7.4.4  |
+| REQ-DIS-010 | Detonation PDU parser rejects buffers shorter than the fixed 104 bytes                                   | `Clearance.DIS.DetonationPDU.MalformedRejection` | IEEE 1278.1-2012 §7.4.4|
+| REQ-DIS-011 | Emission PDU serialises the fixed 100-byte header plus one variable-length track/jam block per painted entity | `Clearance.DIS.EmissionPDU.Roundtrip`          | IEEE 1278.1-2012 §7.6.2  |
+| REQ-DIS-012 | Emission PDU round-trips emitter name, function, frequency low/high, ERP, PRF, pulse width, and beam azimuth byte-exactly | `Clearance.DIS.EmissionPDU.Roundtrip`          | IEEE 1278.1-2012 §7.6.2  |
+| REQ-DIS-013 | Emission PDU enumerates every painted entity's Entity ID in the Track/Jam list                           | `Clearance.DIS.EmissionPDU.Roundtrip`          | IEEE 1278.1-2012 §7.6.2  |
+| REQ-DIS-014 | Emission PDU parser rejects buffers with truncated track/jam blocks                                      | `Clearance.DIS.EmissionPDU.MalformedRejection` | IEEE 1278.1-2012 §7.6.2  |
+| REQ-DIS-015 | Transmitter PDU serialises to exactly 104 bytes                                                          | `Clearance.DIS.TransmitterPDU.Roundtrip`       | IEEE 1278.1-2012 §7.7.2  |
+| REQ-DIS-016 | Transmitter PDU round-trips radio entity ID, transmit state, input source, modulation, transmit frequency, and transmit power | `Clearance.DIS.TransmitterPDU.Roundtrip`       | IEEE 1278.1-2012 §7.7.2  |
 | REQ-DIS-017 | Transmitter PDU encodes operator entities as ForceId 0 with entity number 60000 (`kOperatorGroundStationEntity`) | `Clearance.DIS.TransmitterPDU.OperatorEntity`  | CLEARANCE convention|
-| REQ-DIS-018 | Transmitter PDU parser rejects buffers shorter than the fixed 104 bytes                                  | `Clearance.DIS.TransmitterPDU.MalformedRejection` | IEEE 1278.1 §7.7.2|
-| REQ-DIS-019 | Signal PDU header is exactly 32 bytes; payload is padded to a 32-bit boundary per §7.7.3                  | `Clearance.DIS.SignalPDU.PaddingBoundary`      | IEEE 1278.1 §7.7.3  |
-| REQ-DIS-020 | Signal PDU round-trips radio reference ID, encoding class, TDL type, sample rate, and payload bytes      | `Clearance.DIS.SignalPDU.Roundtrip`            | IEEE 1278.1 §7.7.3  |
+| REQ-DIS-018 | Transmitter PDU parser rejects buffers shorter than the fixed 104 bytes                                  | `Clearance.DIS.TransmitterPDU.MalformedRejection` | IEEE 1278.1-2012 §7.7.2|
+| REQ-DIS-019 | Signal PDU header is exactly 32 bytes; payload is padded to a 32-bit boundary per §7.7.3                  | `Clearance.DIS.SignalPDU.PaddingBoundary`      | IEEE 1278.1-2012 §7.7.3  |
+| REQ-DIS-020 | Signal PDU round-trips radio reference ID, encoding class, TDL type, sample rate, and payload bytes      | `Clearance.DIS.SignalPDU.Roundtrip`            | IEEE 1278.1-2012 §7.7.3  |
 | REQ-DIS-021 | Signal PDU routes to the operator ground-station entity for operator-side voice transmissions            | `Clearance.DIS.SignalPDU.OperatorEntity`       | CLEARANCE convention|
-| REQ-DIS-022 | Signal PDU parser rejects buffers with declared payload length exceeding the buffer bounds               | `Clearance.DIS.SignalPDU.MalformedRejection`   | IEEE 1278.1 §7.7.3  |
+| REQ-DIS-022 | Signal PDU parser rejects buffers with declared payload length exceeding the buffer bounds               | `Clearance.DIS.SignalPDU.MalformedRejection`   | IEEE 1278.1-2012 §7.7.3  |
 
 ## REQ-FED: federation affiliation mapping
 
@@ -71,11 +71,11 @@ commercial RTIs).
 
 | ID          | Requirement                                                                                              | Verified by                                              | Source                     |
 |-------------|----------------------------------------------------------------------------------------------------------|----------------------------------------------------------|----------------------------|
-| REQ-FED-001 | ForceId 0 represents Other/Unknown affiliation                                                           | `Clearance.Federation.RPRFOM.ForceId.Other`              | IEEE 1278.1 §7.3.4.6       |
-| REQ-FED-002 | ForceId 1 represents Friendly affiliation                                                                | `Clearance.Federation.RPRFOM.ForceId.Friendly`           | IEEE 1278.1 §7.3.4.6       |
-| REQ-FED-003 | ForceId 2 represents Opposing (Hostile) affiliation                                                      | `Clearance.Federation.RPRFOM.ForceId.Hostile`            | IEEE 1278.1 §7.3.4.6       |
-| REQ-FED-004 | ForceId 3 represents Neutral affiliation                                                                 | `Clearance.Federation.RPRFOM.ForceId.Neutral`            | IEEE 1278.1 §7.3.4.6       |
-| REQ-FED-005 | Entity State PDU wire encoding writes ForceId byte-exactly at spec offset 18 for every legal value       | `Clearance.Federation.RPRFOM.ForceId.*`                  | IEEE 1278.1 §7.3.4         |
+| REQ-FED-001 | ForceId 0 represents Other/Unknown affiliation                                                           | `Clearance.Federation.RPRFOM.ForceId.Other`              | IEEE 1278.1-2012 §7.3.2.6  |
+| REQ-FED-002 | ForceId 1 represents Friendly affiliation                                                                | `Clearance.Federation.RPRFOM.ForceId.Friendly`           | IEEE 1278.1-2012 §7.3.2.6  |
+| REQ-FED-003 | ForceId 2 represents Opposing (Hostile) affiliation                                                      | `Clearance.Federation.RPRFOM.ForceId.Hostile`            | IEEE 1278.1-2012 §7.3.2.6  |
+| REQ-FED-004 | ForceId 3 represents Neutral affiliation                                                                 | `Clearance.Federation.RPRFOM.ForceId.Neutral`            | IEEE 1278.1-2012 §7.3.2.6  |
+| REQ-FED-005 | Entity State PDU wire encoding writes ForceId byte-exactly at spec offset 18 for every legal value       | `Clearance.Federation.RPRFOM.ForceId.*`                  | IEEE 1278.1-2012 §7.3.2    |
 | REQ-FED-006 | Non-standard (extended-enum) ForceId values are preserved on the wire, not clamped to a spec value       | `Clearance.Federation.RPRFOM.ForceId.UnknownPreserved`   | Interop convention         |
 
 ## REQ-COMMS: ATC comms and instruction validation

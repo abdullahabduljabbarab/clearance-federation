@@ -54,14 +54,16 @@ Six IEEE 1278.1 PDU types, every one spec-compliant, every one
 byte-for-byte fixed-length verified against `dis_wire_format.cpp`
 round-trip tests.
 
-| PDU type       | Type | Family                    | Spec §  | Fixed size | Round-trip tests |
+| PDU type       | Type | Family                    | Spec §  | Fixed size | Automation tests |
 |----------------|------|---------------------------|---------|------------|------------------|
-| Entity State   | 1    | Entity Information        | §7.3.4  | 144 bytes  | 1                |
-| Fire           | 2    | Warfare                   | §7.3.3  | 96 bytes   | 2                |
-| Detonation     | 3    | Warfare                   | §7.3.4  | 104 bytes  | 2                |
-| Emission       | 23   | Distributed Emission Regen| §7.6.2  | 100 + tracks/jam records | 3    |
-| Transmitter    | 25   | Radio Communications      | §7.7.2  | fixed head + record | 1        |
-| Signal         | 26   | Radio Communications      | §7.7.3  | fixed head + payload padded to 32-bit boundary per §7.7.3.9 | 1 |
+| Entity State   | 1    | Entity Information        | §7.3.2  | 144 bytes  | 1 (covered under Federation group as ForceId round-trips) |
+| Fire           | 2    | Warfare                   | §7.4.3  | 96 bytes   | 2 (round-trip + malformed rejection)                      |
+| Detonation     | 3    | Warfare                   | §7.4.4  | 104 bytes  | 2 (round-trip + malformed rejection)                      |
+| Emission       | 23   | Distributed Emission Regen| §7.6.2  | 100 + tracks/jam records | 3 (round-trip + malformed rejection + empty target list) |
+| Transmitter    | 25   | Radio Communications      | §7.7.2  | 104 bytes  | 3 (round-trip + malformed rejection + operator entity)    |
+| Signal         | 26   | Radio Communications      | §7.7.3  | fixed 32-byte header + payload padded to a 32-bit boundary per §7.7.3.9 | 4 (round-trip + malformed rejection + padding boundary + operator entity) |
+
+Section numbers refer to IEEE 1278.1-2012.
 
 All six live-verified against Wireshark's built-in DIS dissector.
 No custom dissector, no wire-shim. The dissector decodes every
@@ -93,116 +95,181 @@ theory. The [`REQUIREMENTS.md`](REQUIREMENTS.md) companion doc
 tabulates all 69, and [`V_AND_V_PLAN.md`](V_AND_V_PLAN.md) documents
 the three-tier structure (unit, integration, manual) with five
 manual verification procedures (Wireshark capture, RTI Admin
-Console, in-process subscriber, two-federate live, automation full
+Console, standalone subscribers, two-federate live, automation full
 pass).
 
 ![All 52 automation tests passing in UE Session Frontend](docs/img/tests_passing.png)
 
-*52 out of 52 tests pass locally via `Automation RunTests Clearance.*`
-in the UE Session Frontend. Each test in the list corresponds to
-one or more REQ-IDs in `REQUIREMENTS.md`, so a passing run is a
-receipt against the requirements table above.*
+*Figure 1: Session Frontend Automation tab with the filter `clearance` applied,
+running the full `Clearance.*` tree. Result bar reads
+`52 Tests / 0 Fails / 0 Skips / 0.424 Seconds`. Every leaf in the
+tree carries a green tick. Each test corresponds to one or more
+REQ-IDs in `REQUIREMENTS.md`, so a green run is a receipt against
+the requirements table above.*
 
 ## The federation panel
 
 ![CLEARANCE Instructor Station federation panel with all four wires enabled](docs/img/federation_panel.png)
 
-*All four wires running against the same running sim. DIS emitting
-1263 packets/sec to multicast 224.0.0.1:3000, DDS + RTI publishing
-on domain 0, HLA federate joined to `CLEARANCE` federation via
-OpenRTI's `rtinode.exe` at `127.0.0.1:14321`. Each wire independently
-start/stop-able from the panel with a start button, stop button,
-status dot, and live rate counter.*
+*Figure 2: Instructor Station federation panel with all four wires enabled
+against the same running sim. DIS emitting to multicast
+`224.0.0.1:3000` at 686 packets/sec with a 61/s receive echo; DDS on
+domain 0 emitting 686/s and receiving 25/s with 1855 samples ingested;
+RTI Connext on domain 1 emitting 292/s; HLA joined to the `CLEARANCE`
+federation pushing 292/s attribute updates. Site ID 1 stamped on every
+outbound entity. Each wire has its own EMIT / STOP EMIT / RECV /
+STOP RECV controls plus live rate counters, so any wire can be turned
+on or off independently.*
 
 ## IEEE 1278.1 on the wire
 
 ![DIS PDUs decoded in Wireshark](docs/img/wireshark_dis.png)
 
-*CLEARANCE publishing IEEE 1278.1 Entity State + Transmitter + Signal
-PDUs onto UDP multicast 224.0.0.1:3000. Wireshark's built-in DIS
-dissector decodes every field: PDU header, entity ID triple, ECEF
-position, entity type kind/domain, dead reckoning parameters. No
-custom dissector, no wire shim, just a spec-compliant buffer.*
+*Figure 3: Loopback capture with filter `udp.port == 3000 and dis` on a
+running CLEARANCE session. Wireshark's built-in DIS dissector picks up
+Entity State (PDU Type 1), Electromagnetic Emission (Type 23) and
+Transmitter (Type 25) frames streaming to multicast `224.0.0.1`. The
+expanded frame is a Transmitter PDU (Type 25, Radio Communications
+family, PDU Length 104 bytes) fully decoded: header carrying **Proto
+version: IEEE 1278.1-2012 (7)**, Entity ID `1:1:37092`, Radio ID 1,
+Radio Entity Type resolved as **Kind: Radio (7) / Domain: Air (2) /
+Country: United Kingdom of Great Britain and Northern Ireland (GBR)
+(224) / Radio Category: Voice Transmission/Reception (1)**, Transmit
+State `On but not transmitting`, Radio Input Source Pilot, ECEF
+Antenna Location, Transmit Frequency 121500000 Hz (121.5 MHz ATC
+guard), Bandwidth 25 kHz, Transmit Power 43 dBm. No custom dissector,
+no wire shim, just a spec-compliant buffer that Wireshark can walk
+field by field.*
 
 ![Detonation PDU (Type 3) decoded in Wireshark](docs/img/detonation_pdu.png)
 
-*Detonation PDU (Type 3, §7.3.4) filtered from the wire when a
-Viper intercept flight escorts a bandit out of the sector. Warfare
-family PDU, spec-compliant 104 bytes, paired by EventNumber with
-its earlier Fire PDU (Type 2). The intercept resolution IS the
-"detonation" in DIS semantics for a non-lethal escort-out; result
-byte set to 2 (Entity Proximate Detonation). Same emit path as
-every other PDU, no special-case wiring.*
+*Figure 4: Wireshark capture narrowed with `dis.pdu_type == 3` after an
+intercept resolves. Warfare-family Detonation PDUs (Type 3, §7.4.4)
+appear on the wire with PDU Length 104 bytes, the paired
+Firing / Target / Munition entity IDs, an Event ID whose Event Number
+matches the earlier Fire PDU, and Detonation Result byte 2 (Entity
+Proximate Detonation). The "detonation" here is the DIS semantic used
+for a non-lethal escort-out, not a lethal engagement. Same emit path
+as every other PDU, no special-case wiring.*
+
+![Emission PDU (Type 23) decoded in Wireshark showing ASR-9 fingerprint](docs/img/wireshark_emission.png)
+
+*Figure 5: Wireshark capture narrowed with `dis.pdu_type == 23` while the
+CLEARANCE radar sim is ticking against live traffic. Distributed
+Emission Regeneration (family 6) frames appear at the sim tick rate,
+one Emission PDU per active radar per tick. The expanded frame
+(Emitting Entity `1:1:19582`) shows the full radar fingerprint under
+`Emission System` → `Emitter System`: **`Emitter Name: ASR-9 (8790)`**
+(SISO-REF-010 UID 75), **`Emission Function: Air Traffic Control (22)`**
+(SISO-REF-010 UID 76), one Beam with **`Beam Function: Search (1)`**
+(SISO-REF-010 UID 78), plus `Fundamental Parameter Data` carrying
+centre frequency, PRF, pulse width and effective radiated power. The
+three highlighted enum values are the exact fields called out in
+`REQUIREMENTS.md` and `ARCHITECTURE.md`, decoded independently by
+Wireshark's own DIS dissector — third-party proof that the wire codec
+writes SISO-conformant values.*
 
 ## Wire codec API
 
 ![ClearanceDISPDU.h showing POD struct API](docs/img/clearance_dis_header.png)
 
-*`ClearanceDISPDU.h`, the entire public surface of the DIS wire codec
-in a single header. POD structs, `CLEARANCEDIS_API` DLL-export macro,
-Build and Parse free functions. Zero Unreal types, `std::vector` and
-`std::string` and `<cstdint>` on the boundary. The `test/CMakeLists.txt`
-in the same module builds the round-trip test suite against this
-header with no engine dependency, which is what proves the codec is
-reusable outside CLEARANCE.*
+*Figure 6: Excerpt from `ClearanceDISPDU.h` inside `namespace ClearanceDIS`
+showing the POD struct declarations for the first four PDU types:
+`FEntityState` (Type 1, §7.3.2), `FFireEvent` (Type 2, §7.4.3),
+`FDetonationEvent` (Type 3, §7.4.4) and `FEmissionSnapshot` (Type 23,
+§7.6.2). Every field is a `std::uint*_t`, `float`, `double` or
+`std::string`. No Unreal types anywhere on the boundary. The rest of
+the header (elided) declares the equivalent `FTransmitterState` and
+`FSignalEvent` structs plus the eleven `CLEARANCEDIS_API` Build /
+Parse free functions, and the neighbouring `test/CMakeLists.txt`
+compiles a round-trip test suite against this same header with no
+engine dependency, which is what makes the codec reusable outside
+CLEARANCE.*
 
 ## OMG DDS via Fast DDS, discovered by RTI's own tooling
 
 ![Fast DDS participant discovered by RTI Administration Console](docs/img/rti_console_fastdds_discovery.png)
 
-*The Fast DDS side of CLEARANCE (five DataWriters, five DataReaders
-for the in-process demo subscriber) discovered by RTI Administration
-Console. Product Version reads 0.0 and there is no RTI Vendor line
-because this participant is not RTI Connext, it's eProsima Fast DDS
-speaking standard OMG DDS-RTPS 2.5 on the wire. The fact that RTI's
-tool discovers it and walks its topology is proof the schema is
-vendor-neutral OMG DDS, not accidentally Fast-DDS-specific.*
+*Figure 7: RTI Administration Console discovering the Fast DDS side of CLEARANCE
+on Domain 0 as an `RTPSParticipant` on host `192.168.0.254`. The
+graphical view resolves one Publisher with six DataWriters and one
+Subscriber with six DataReaders (the in-process sanity subscriber)
+against the six `clearance/*` Topics visible in the DDS Logical View
+on the left. Entity Info panel confirms it: Topics 6, DataWriters 6,
+Subscribers 1, DataReaders 6. Product Version reads `0.0` and there
+is no RTI Vendor line because this participant is not RTI Connext,
+it's eProsima Fast DDS speaking standard OMG DDS-RTPS 2.5 on the wire.
+The fact that RTI's own tool discovers it and walks its topology is
+proof the schema is vendor-neutral OMG DDS, not accidentally
+Fast-DDS-specific.*
 
 ![AirspaceTelemetry.idl schema](docs/img/dds_idl.png)
 
-*`AirspaceTelemetry.idl`, the OMG IDL schema that Fast DDS and RTI
-Connext both codegen from. One IDL, two vendor runtimes, same six
-topics: `AircraftState`, `EmissionSnapshot`, `TransmitterState`,
-`SignalEvent`, `FireEvent`, `DetonationEvent`. Field-for-field
-mapping to the DIS PDU siblings above, encoded on the wire as OMG
-CDR (Common Data Representation) inside RTPS 2.5.*
+*Figure 8: `AirspaceTelemetry.idl` open in Visual Studio, showing the
+`AircraftState` and `FireEvent` struct declarations (with
+`DetonationEvent` appearing below). `AircraftState` carries the DIS
+Entity State field set (ForceId, EntityKind / Domain / Country /
+Category, `XMeters/YMeters/ZMeters` ECEF position, velocity, radians
+orientation) plus the ATC-specific extension fields (`TrueAffiliation`,
+`SquawkCode`, `ActiveEmergency`, `FlightPhase`) whose comments cite the
+`ATCManagedAircraft` subclass in `ClearanceRPR-FOM.xml` — same schema,
+DIS-side and HLA-side. This one IDL is what Fast DDS's `fastddsgen`
+and RTI Connext's `rtiddsgen` both code-generate from, encoding the
+six topics (`AircraftState`, `EmissionSnapshot`, `TransmitterState`,
+`SignalEvent`, `FireEvent`, `DetonationEvent`) on the wire as OMG CDR
+inside RTPS 2.5.*
 
 ## OMG DDS via RTI Connext, discovered by RTI Administration Console
 
 ![CLEARANCE's RTI Connext participant with six DataWriters](docs/img/rti_admin_console.png)
 
-*Second parallel wire from the same CLEARANCE process, this one
-published through RTI Connext DDS 7.7.0. One DomainParticipant, one
-Publisher, six DataWriters on the same six topics as the Fast DDS
-wire. Entity Info panel shows Product Version 7.7.0, Protocol
-Version 2.5, and Vendor "Real-Time Innovations, Inc. (RTI) - Connext
-DDS : {0x0101}". A vendor runtime with a valid licence populates this
-window. Screenshots of code do not.*
+*Figure 9: Same RTI Admin Console, this time on Domain 1 looking at the
+CLEARANCE editor process (`nasa-pc`, PID 50832). One DomainParticipant,
+one Publisher, six DataWriters on the same six `clearance/*` topics as
+the Fast DDS wire; Entity metrics panel confirms Topics 6,
+DomainParticipants 1, Publishers 1, DataWriters 6, Subscribers 0,
+DataReaders 0 (publisher-only side). Product version reads 7.7.0,
+Protocol version 2.5, Vendor `Real-Time Innovations, Inc. (RTI) -
+Connext DDS : {0x0101}`. A vendor runtime with a valid licence
+populates this window. Screenshots of code do not.*
 
 ## IEEE 1516-2010 HLA-Evolved
 
 ![OpenRTI federation with CLEARANCE federate joined](docs/img/hla_federationsubscriber.png)
 
-*CLEARANCE joined to an OpenRTI federation as `CLEARANCE-Instructor`.
-Federation execution name `CLEARANCE`, FOM Module XML at
-`ClearanceRPR-FOM.xml` extending SISO RPR-FOM 2.0's
+*Figure 10: External `clearance_hla_subscriber.exe` federate proving the CLEARANCE
+side is publishing to a real federation, not into a void. It runs as
+an independent IEEE 1516-2010 process, contacts `rtinode.exe`, joins
+the same `CLEARANCE` federation execution as `CLEARANCE-Subscriber`,
+subscribes to `ATCManagedAircraft`, and starts printing incoming
+attribute updates in real time. The `[HLA-SUB] #N <callsign> ->
+ATCManagedAircraft Squawk=... Phase=... Facility=...` lines are
+live attribute updates coming out of the CLEARANCE editor, including
+the emergency squawks (7500 hijack, 7600 NORDO, 7700 general) and
+`GoAround` phase transitions as they happen in the scope. The
+federation contract itself (FOM Module `ClearanceRPR-FOM.xml`
+extending SISO RPR-FOM 2.0's
 `HLAobjectRoot.BaseEntity.PhysicalEntity.Platform.Aircraft` with an
-`ATCManagedAircraft` subclass. Attribute encoding uses HLAfloat64BE
-for world coordinates, HLAinteger16BE for squawk, HLAfixedRecord
-for the EntityIdentifier {Site, App, Entity} triple, HLAopaqueData
-for the 11-char Marking.*
+`ATCManagedAircraft` subclass, HLAfloat64BE for world coordinates,
+HLAinteger16BE for squawk, HLAfixedRecord for the EntityIdentifier
+{Site, App, Entity} triple, HLAopaqueData for the 11-char Marking) is
+what makes this cross-process interop possible.*
 
 ![ClearanceRPR-FOM.xml showing ATCManagedAircraft class](docs/img/hla_fom_xml.png)
 
-*`ClearanceRPR-FOM.xml` FOM Module extending SISO RPR-FOM 2.0's
-`Aircraft` object class with an `ATCManagedAircraft` subclass carrying
-CLEARANCE-specific attributes: `SquawkCode` as `HLAinteger16BE`,
-`FlightPhase` as an enum, `ActiveClearance` as `HLAunicodeString`,
-`ATCFacility` as `HLAunicodeString`. Every attribute declares its
-full HLA semantics (sharing, transportation reliability, ordering,
-ownership) per IEEE 1516-2010, with semantic comments documenting
-the ATC domain rules (Mode A / 3 SSR encoding, flight-phase enum
-values, ICAO facility identifiers).*
+*Figure 11: The `<objectClass>` block for `ATCManagedAircraft` inside
+`ClearanceRPR-FOM.xml`, opened in Visual Studio. The class extends the
+stock RPR-FOM `Aircraft` with four attributes: `SquawkCode` as
+`HLAinteger16BE` (Mode A / 3 SSR, octal 0000-7777 in the low 12 bits),
+`FlightPhase` as `FlightPhaseEnum` (Enroute / Approach / Landing /
+GoAround / Departing / Exiting), `ActiveClearance` as
+`HLAunicodeString` (human-readable clearance text, `HLAreliable`
+transport because losing a clearance update creates a dangerous
+situation-awareness gap on peer federates), and `ATCFacility` as
+`HLAunicodeString` (ICAO identifier of the controlling facility). Each
+attribute declares its full HLA semantics (`sharing`,
+`transportation`, `order`, `ownership`) per IEEE 1516-2010 and carries
+a `<semantics>` block documenting the ATC domain rule.*
 
 ## Architecture principles
 
@@ -325,13 +392,24 @@ clearance-federation/
 
 ## Standards referenced
 
-- **IEEE 1278.1-2012** - *Distributed Interactive Simulation, Application Protocols*
+- **IEEE 1278.1-2012** - *Distributed Interactive Simulation, Application Protocols*. PDU section numbering (§7.3.2 Entity State, §7.4.3 Fire, §7.4.4 Detonation, §7.6.2 Emission, §7.7.2 Transmitter, §7.7.3 Signal) traces back here.
+- **SISO-REF-010-2025 (v36)** - *Reference for Enumerations for Simulation Interoperability*. Ground truth for every DIS enum value CLEARANCE writes on the wire: UID 75 Emitter Name (`8790 = ASR-9`), UID 76 Emitter System Function (`22 = Air Traffic Control`), UID 78 Beam Function (`1 = Search`), UID 8 Domain (`2 = Air`), Country codes (`224 = GBR`), Force ID, Detonation Result. Free download from https://www.sisostandards.org/page/ReferenceDocuments.
 - **OMG DDS 1.4** - *Data Distribution Service for Real-time Systems*
 - **OMG DDS-RTPS 2.5** - *Real-Time Publish-Subscribe Wire Protocol*
 - **OMG DDS-XTypes 1.3** - *Extensible and Dynamic Topic Types for DDS*
 - **IEEE 1516-2010** - *Modeling and Simulation High Level Architecture (HLA-Evolved)*
 - **SISO-STD-001-2015** - *RPR-FOM 2.0 Reference Federation Object Model*
 - **ICAO Doc 4444** - *Procedures for Air Navigation Services - Air Traffic Management* (referenced by safety tests)
+
+### Independent cross-references
+
+Structural claims in this repo (PDU byte sizes, protocol family assignments, DIS version 7 = IEEE 1278.1-2012) are corroborated against open-source DIS implementations and third-party dissectors, not just the paid IEEE PDF:
+
+- **KDIS** — open-source C++ DIS library (BSD-2-Clause), https://github.com/karljj1/kdis. `_SIZE` constants and folder structure independently confirm byte sizes (`ENTITY_STATE_PDU_SIZE = 144`, `FIRE_PDU_SIZE = 96`, `DETONATION_PDU_SIZE = 104`, `TRANSMITTER_PDU_SIZE = 104`) and family groupings (`PDU/Warfare/`, `PDU/Radio_Communications/`, `PDU/Distributed_Emission_Regeneration/`). Its Build Option table also confirms `DIS_VERSION = 7` corresponds to IEEE 1278.1-2012.
+- **Wireshark DIS dissector** — `epan/dissectors/packet-dis.c` in https://github.com/wireshark/wireshark. The same dissector used in Figures 3–5 of this README decodes CLEARANCE's PDUs cleanly. Its enum-string tables (`DIS_PDU_Emitter_System_Function_Strings[]`, `DIS_PDU_Electromagnetic_Emission_Beam_Function_Strings[]`, `DIS_PDU_Radio_Category_Strings[]`) resolve on-wire values to the SISO-REF-010 names in real time — the `EmitterFunction = 22 → "Air Traffic Control"`, `BeamFunction = 1 → "Search"` and `Radio Category = 1 → "Voice Transmission/Reception"` decodes visible in the figures are Wireshark's, not ours. The dissector's internal protocol-version constant `DIS_VERSION_IEEE_1278_1_2012` independently confirms our `protocol_version = 7 = IEEE 1278.1-2012` claim.
+- **SISO-REF-010-2025 v36** — as above, the enumerations catalogue.
+
+The specific IEEE 1278.1-2012 sub-section indices (`§7.x.y.z`) cited in this repo and in the code comments are nominal citations against the IEEE standard's table of contents and are not independently verified against the IEEE PDF, which is a paid document.
 
 ## Video walkthrough
 
@@ -344,6 +422,21 @@ where two independent CLEARANCE processes share an airspace picture
 over all four wires simultaneously.
 
 https://youtu.be/u7qeIkqkt4s
+
+> **Note on the video capture.** The walkthrough was recorded against
+> an earlier build in which the DIS emitter still wrote protocol
+> version byte `6` (IEEE 1278.1a-1998), the Transmitter PDU's Radio
+> Entity Type Category was `5` (which Wireshark decodes as
+> "ILS Localizer"), and the Entity / Munition / Radio Entity Country
+> byte was `225` (United States of America). All three were tightened
+> in a later pass: the emitter now writes protocol version `7`
+> (IEEE 1278.1-2012), Radio Category `1` (Voice Transmission/Reception,
+> the SISO-REF-010 name for a standard VHF ATC comm radio), and
+> Country `224` (United Kingdom of Great Britain and Northern Ireland,
+> matching the sim's Warton / EGNO airfield location). These match
+> what `REQUIREMENTS.md` and the Figures 3 and 4 screenshots claim.
+> Every other detail in the video (PDU sizes, families, byte offsets,
+> topic names, HLA object class, ForceId mapping) is unchanged.
 
 Companion Model-Based Design video from the same simulator (Simulink
 autopilot flying every aircraft, Simulink radar signal chain
