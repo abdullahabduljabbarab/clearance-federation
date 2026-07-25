@@ -1,5 +1,10 @@
 # clearance-federation
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![DIS](https://img.shields.io/badge/DIS-IEEE%201278.1--2012-informational)](https://standards.ieee.org/ieee/1278.1/4949/)
+[![DDS-RTPS](https://img.shields.io/badge/DDS--RTPS-OMG%202.5-informational)](https://www.omg.org/spec/DDSI-RTPS/)
+[![HLA](https://img.shields.io/badge/HLA-IEEE%201516--2010-informational)](https://standards.ieee.org/ieee/1516/4064/)
+
 Four independent simulation-interoperability wires publishing the
 same six data primitives from a single sim tick out of **CLEARANCE**,
 a UE5 air traffic control and defence training simulator I built.
@@ -467,6 +472,28 @@ over all four wires simultaneously.
 
 https://youtu.be/u7qeIkqkt4s
 
+| Timestamp | Section |
+|---|---|
+| 00:00 | Intro |
+| 00:10 | IEEE 1278.1 DIS: six PDU types |
+| 00:36 | Wireshark DIS capture |
+| 02:40 | Intercept scramble on the wire |
+| 03:45 | Detonation PDU (Type 3) in Wireshark |
+| 04:50 | Voice command + radio PDUs in Wireshark |
+| 06:10 | ClearanceDISPDU.h wire codec |
+| 07:06 | OMG DDS via Fast DDS 3.6.1: six topics |
+| 07:40 | AirspaceTelemetry.idl schema |
+| 08:04 | DDS federation live |
+| 09:07 | 44 automation tests, 61 REQ-IDs *(now 52 tests / 69 REQs — see note below)* |
+| 09:49 | OMG DDS via RTI Connext 7.7.0 |
+| 10:20 | RTI Connext Administration Console |
+| 11:40 | IEEE 1516-2010 HLA-Evolved via OpenRTI |
+| 12:15 | rtinode.exe federation runtime |
+| 13:25 | FOM Module XML extending RPR-FOM 2.0 |
+| 14:11 | HLA subscriber |
+| 15:19 | Back-end network architecture summary |
+| 16:07 | Two-federate live demo |
+
 > **Note on the video capture.** The walkthrough was recorded against
 > an earlier build in which the DIS emitter still wrote protocol
 > version byte `6` (IEEE 1278.1a-1998), the Transmitter PDU's Radio
@@ -477,10 +504,14 @@ https://youtu.be/u7qeIkqkt4s
 > (IEEE 1278.1-2012), Radio Category `1` (Voice Transmission/Reception,
 > the SISO-REF-010 name for a standard VHF ATC comm radio), and
 > Country `224` (United Kingdom of Great Britain and Northern Ireland,
-> matching the sim's Warton / EGNO airfield location). These match
-> what `REQUIREMENTS.md` and the Figures 3 and 4 screenshots claim.
-> Every other detail in the video (PDU sizes, families, byte offsets,
-> topic names, HLA object class, ForceId mapping) is unchanged.
+> matching the sim's Warton / EGNO airfield location). The automation
+> test count and REQ-ID count also grew after recording: the video
+> shows `44 automation tests / 61 REQ-IDs` at 09:07; the current repo
+> ships `52 automation tests / 69 REQ-IDs` following subsequent radar
+> and safety-domain additions. All the drifted values match what
+> `REQUIREMENTS.md` and the Figures 3 and 4 screenshots claim. Every
+> other detail in the video (PDU sizes, families, byte offsets, topic
+> names, HLA object class, ForceId mapping) is unchanged.
 
 Companion Model-Based Design video from the same simulator (Simulink
 autopilot flying every aircraft, Simulink radar signal chain
