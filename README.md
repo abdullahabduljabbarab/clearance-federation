@@ -98,6 +98,8 @@ manual verification procedures (Wireshark capture, RTI Admin
 Console, standalone subscribers, two-federate live, automation full
 pass).
 
+<div align="center">
+
 ![All 52 automation tests passing in UE Session Frontend](docs/img/tests_passing.png)
 
 *Figure 1: Session Frontend Automation tab with the filter `clearance` applied,
@@ -107,7 +109,11 @@ tree carries a green tick. Each test corresponds to one or more
 REQ-IDs in `REQUIREMENTS.md`, so a green run is a receipt against
 the requirements table above.*
 
+</div>
+
 ## The federation panel
+
+<div align="center">
 
 ![CLEARANCE Instructor Station federation panel with all four wires enabled](docs/img/federation_panel.png)
 
@@ -121,7 +127,11 @@ outbound entity. Each wire has its own EMIT / STOP EMIT / RECV /
 STOP RECV controls plus live rate counters, so any wire can be turned
 on or off independently.*
 
+</div>
+
 ## IEEE 1278.1 on the wire
+
+<div align="center">
 
 ![DIS PDUs decoded in Wireshark](docs/img/wireshark_dis.png)
 
@@ -141,6 +151,10 @@ guard), Bandwidth 25 kHz, Transmit Power 43 dBm. No custom dissector,
 no wire shim, just a spec-compliant buffer that Wireshark can walk
 field by field.*
 
+</div>
+
+<div align="center">
+
 ![Detonation PDU (Type 3) decoded in Wireshark](docs/img/detonation_pdu.png)
 
 *Figure 4: Wireshark capture narrowed with `dis.pdu_type == 3` after an
@@ -151,6 +165,10 @@ matches the earlier Fire PDU, and Detonation Result byte 2 (Entity
 Proximate Detonation). The "detonation" here is the DIS semantic used
 for a non-lethal escort-out, not a lethal engagement. Same emit path
 as every other PDU, no special-case wiring.*
+
+</div>
+
+<div align="center">
 
 ![Emission PDU (Type 23) decoded in Wireshark showing ASR-9 fingerprint](docs/img/wireshark_emission.png)
 
@@ -169,7 +187,11 @@ three highlighted enum values are the exact fields called out in
 Wireshark's own DIS dissector — third-party proof that the wire codec
 writes SISO-conformant values.*
 
+</div>
+
 ## Wire codec API
+
+<div align="center">
 
 ![ClearanceDISPDU.h showing POD struct API](docs/img/clearance_dis_header.png)
 
@@ -186,7 +208,11 @@ compiles a round-trip test suite against this same header with no
 engine dependency, which is what makes the codec reusable outside
 CLEARANCE.*
 
+</div>
+
 ## OMG DDS via Fast DDS, discovered by RTI's own tooling
+
+<div align="center">
 
 ![Fast DDS participant discovered by RTI Administration Console](docs/img/rti_console_fastdds_discovery.png)
 
@@ -202,6 +228,10 @@ it's eProsima Fast DDS speaking standard OMG DDS-RTPS 2.5 on the wire.
 The fact that RTI's own tool discovers it and walks its topology is
 proof the schema is vendor-neutral OMG DDS, not accidentally
 Fast-DDS-specific.*
+
+</div>
+
+<div align="center">
 
 ![AirspaceTelemetry.idl schema](docs/img/dds_idl.png)
 
@@ -219,7 +249,11 @@ six topics (`AircraftState`, `EmissionSnapshot`, `TransmitterState`,
 `SignalEvent`, `FireEvent`, `DetonationEvent`) on the wire as OMG CDR
 inside RTPS 2.5.*
 
+</div>
+
 ## OMG DDS via RTI Connext, discovered by RTI Administration Console
+
+<div align="center">
 
 ![CLEARANCE's RTI Connext participant with six DataWriters](docs/img/rti_admin_console.png)
 
@@ -233,7 +267,11 @@ Protocol version 2.5, Vendor `Real-Time Innovations, Inc. (RTI) -
 Connext DDS : {0x0101}`. A vendor runtime with a valid licence
 populates this window. Screenshots of code do not.*
 
+</div>
+
 ## IEEE 1516-2010 HLA-Evolved
+
+<div align="center">
 
 ![OpenRTI federation with CLEARANCE federate joined](docs/img/hla_federationsubscriber.png)
 
@@ -255,6 +293,10 @@ HLAinteger16BE for squawk, HLAfixedRecord for the EntityIdentifier
 {Site, App, Entity} triple, HLAopaqueData for the 11-char Marking) is
 what makes this cross-process interop possible.*
 
+</div>
+
+<div align="center">
+
 ![ClearanceRPR-FOM.xml showing ATCManagedAircraft class](docs/img/hla_fom_xml.png)
 
 *Figure 11: The `<objectClass>` block for `ATCManagedAircraft` inside
@@ -270,6 +312,8 @@ situation-awareness gap on peer federates), and `ATCFacility` as
 attribute declares its full HLA semantics (`sharing`,
 `transportation`, `order`, `ownership`) per IEEE 1516-2010 and carries
 a `<semantics>` block documenting the ATC domain rule.*
+
+</div>
 
 ## Architecture principles
 
