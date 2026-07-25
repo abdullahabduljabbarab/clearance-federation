@@ -1,24 +1,45 @@
 # Verification and Validation Plan
 
-The strategy behind how CLEARANCE's requirements get verified.
-Companion to [`REQUIREMENTS.md`](REQUIREMENTS.md), which is the flat
-list of what the requirements are.
-
-If REQUIREMENTS.md answers "what is CLEARANCE supposed to do?", this
-doc answers "how do we prove it does?".
+This document defines how CLEARANCE's requirements are verified
+and how the resulting simulator is validated against its intended
+use. Companion to [`REQUIREMENTS.md`](REQUIREMENTS.md) (the
+requirements traceability matrix): if that doc says what CLEARANCE
+is required to do, this one says how evidence is produced that it
+does so.
 
 The tests themselves live in the parent CLEARANCE simulator; this
-showcase repo mirrors the plan so the discipline is visible without
-cloning the whole simulator.
+showcase repo mirrors the plan so the engineering discipline is
+visible without cloning the whole simulator.
+
+**Verification vs validation.** V&V are related but distinct
+activities. **Verification** produces evidence that the
+implementation satisfies its specified requirements — was the
+system built correctly? **Validation** produces evidence that the
+implemented system is suitable for its intended simulation and
+training purpose — was the appropriate system built? Automated
+tests carry most of the verification load; validation is supported
+by end-to-end scenarios, interoperability demonstrations,
+third-party-tool inspection (Wireshark, RTI Admin Console), and
+manual procedures.
 
 ## 1. Purpose and scope
 
-V&V on a portfolio project is a proportionality exercise. CLEARANCE
-isn't going into a Category A avionics box, so it doesn't need
-DO-178C-level rigour. But it IS a defence M&S portfolio piece, so
-it does need to demonstrate the DISCIPLINE that a Category A
-programme would exhibit: traceability, structured test tiers, and
-an honest accounting of what's automated versus manual.
+CLEARANCE is a portfolio simulation demonstrator, not certified
+airborne software or an operational defence system. **This plan
+makes no claim of compliance with DO-178C or any equivalent
+safety-certification standard.** V&V effort here is proportionate
+to the project's purpose, risk, and maturity: CLEARANCE does not
+carry the assurance obligations of Level A airborne software, but
+it does demonstrate — proportionately — the underlying engineering
+practices expected of high-integrity simulation development:
+uniquely identified and testable requirements, bidirectional
+traceability between requirements and verification cases,
+structured unit / integration / manual test tiers, positive and
+negative test paths where relevant, repeatable manual procedures
+where automation is insufficient, third-party-observable evidence
+(Wireshark protocol decoding, RTI Admin Console middleware
+discovery), and explicit disclosure of scope, assumptions, and
+residual gaps.
 
 ### In scope
 
