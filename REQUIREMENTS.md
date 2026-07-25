@@ -1,17 +1,26 @@
-# Requirements
+# Requirements Traceability
 
-Every requirement covered by the CLEARANCE automation test suite,
-grouped by domain and traced to the specific test that verifies it.
-Each REQ-ID is tagged in a leading comment on the test that owns it,
-so the source is authoritative. This doc just tabulates.
+This document traces every requirement covered by the CLEARANCE
+automation test suite to the specific test that verifies it.
+Requirements are grouped by engineering domain and each carries a
+unique `REQ-<DOMAIN>-<###>` identifier.
+
+Every automated test declares the requirement or requirements it
+verifies via a leading source-comment tag. Those source-level tags
+are the authoritative traceability links; this document presents
+the same information as a readable requirements verification
+matrix, so a reviewer can audit coverage without grepping the
+codebase.
 
 The tests themselves live in the parent CLEARANCE simulator under
-`Plugins/ClearanceSim/Source/ClearanceSim/Private/Tests/`. This
-showcase repo mirrors the requirements structure so the traceability
-story is visible without cloning the whole simulator.
+[`Plugins/ClearanceSim/Source/ClearanceSim/Private/Tests/`](../../Plugins/ClearanceSim/Source/ClearanceSim/Private/Tests/).
+This showcase repo does not contain the complete simulator source
+but mirrors its requirements structure so the traceability approach
+can be reviewed independently.
 
-Companion to [`V_AND_V_PLAN.md`](V_AND_V_PLAN.md), which is the
-strategy behind how the requirements get verified.
+Companion to [`V_AND_V_PLAN.md`](V_AND_V_PLAN.md), which defines
+the overall verification strategy, test tiers, coverage targets,
+and manual verification procedures.
 
 ## Numbering scheme
 

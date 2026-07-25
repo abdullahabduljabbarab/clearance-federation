@@ -6,7 +6,7 @@ has the engineering.
 
 ## Contents
 
-- [One source, four wires](#one-source-four-wires)
+- [One source, four federation backends](#one-source-four-federation-backends)
 - [Module boundary discipline](#module-boundary-discipline)
 - [ClearanceDIS: IEEE 1278.1 wire codec](#clearancedis-ieee-12781-wire-codec)
 - [ClearanceDDS: OMG DDS via Fast DDS](#clearancedds-omg-dds-via-fast-dds)
@@ -16,14 +16,19 @@ has the engineering.
 - [Vendor SDK integration notes](#vendor-sdk-integration-notes)
 - [What this repo does not include](#what-this-repo-does-not-include)
 
-## One source, four wires
+## One source, four federation backends
 
-Every federation wire reads from the same source of truth: the sim
-controller's per-tick snapshot of aircraft state, radar emissions,
-comms traffic, and weapons events. On each server tick every
-enabled emitter marshals that snapshot into its wire format and
-writes to its transport. No emitter modifies sim state; they are
-strictly downstream consumers of an authoritative struct.
+Every federation backend reads from the same source of truth: the
+sim controller's per-tick snapshot of aircraft state, radar
+emissions, comms traffic, radio transmitter state, and discrete
+weapons events. Continuous state (Aircraft, Radar Emission,
+Transmitter) is republished by each enabled backend every server
+tick; discrete events (Fire, Detonation, Signal) are published when
+they occur. Each backend independently converts the relevant
+snapshot records into its own object model or wire representation
+and writes to its transport. Backends perform representation
+conversion only — they never own or modify simulation state, they
+are strictly downstream consumers of the authoritative snapshot.
 
 ```
    Sim tick (server-authoritative)
@@ -51,12 +56,25 @@ strictly downstream consumers of an authoritative struct.
                         -> ATCManagedAircraft object (RPR-FOM 2.0 extension)
 ```
 
-Each emitter is independently start/stop-able from the operator
+Each backend is independently start/stop-able from the operator
 console via server RPCs on `AClearanceOperatorPC`
 (`Server_InjectStart*` / `Server_InjectStop*`). Enabling one does
 not enable any of the others; enabling all four does not
-double-encode the snapshot because each emitter reads the same
+double-encode the snapshot because each backend reads the same
 source struct and marshals separately.
+
+The fan-out architecture keeps vendor SDKs and protocol-specific
+types outside the simulation core. DIS, Fast DDS, RTI Connext, and
+HLA can be started, stopped, tested, or replaced independently
+without touching the authoritative gameplay systems.
+
+Note on the HLA branch: continuous state (Aircraft) is published as
+attribute updates on `ATCManagedAircraft` object instances, as
+shown above. Discrete events (Fire, Detonation, Signal) would
+normally use HLA Interactions rather than attribute updates — the
+Interaction path is a documented future extension of `ClearanceHLA`
+and is not yet shipped; the current HLA branch publishes continuous
+state only.
 
 ## Module boundary discipline
 

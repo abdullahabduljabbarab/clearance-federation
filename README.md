@@ -5,9 +5,16 @@
 [![DDS-RTPS](https://img.shields.io/badge/DDS--RTPS-OMG%202.5-informational)](https://www.omg.org/spec/DDSI-RTPS/)
 [![HLA](https://img.shields.io/badge/HLA-IEEE%201516--2010-informational)](https://standards.ieee.org/ieee/1516/4064/)
 
-Four independent simulation-interoperability wires publishing the
-same six data primitives from a single sim tick out of **CLEARANCE**,
-a UE5 air traffic control and defence training simulator I built.
+Three federation wire protocols — **IEEE 1278.1 DIS**, **OMG DDS**,
+and **IEEE 1516-2010 HLA-Evolved** — with DDS running through two
+vendor implementations in parallel. Four independently switchable
+wires in total, publishing the same six canonical data primitives
+from a single simulation tick in **CLEARANCE**, my UE5 air traffic
+control and defence training simulator.
+
+The six primitives:
+
+**Aircraft State** · **Fire** · **Detonation** · **Electromagnetic Emission** · **Transmitter** · **Signal**
 
 - **IEEE 1278.1 DIS** over UDP multicast, in-house wire codec
 - **OMG DDS** via eProsima Fast DDS 3.6.1
