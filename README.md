@@ -19,12 +19,14 @@ The six primitives:
 - **IEEE 1516-2010 HLA-Evolved** via OpenRTI 0.10.0, RPR-FOM 2.0 base
 
 All four run concurrently against the same authoritative airspace
-state. The same aircraft state hits Wireshark as a spec-compliant
-Entity State PDU, appears in RTI Administration Console as a
-discoverable DomainParticipant with six DataWriters, and lands in
-an HLA federation as an `ATCManagedAircraft` object with encoded
-attributes. Same tick, four wires, four vendor runtimes, zero
-overlap between them.
+state. The same aircraft state is decoded in Wireshark as a spec-compliant
+Entity State PDU, appears in RTI Administration Console through a
+discoverable DomainParticipant with six DataWriters, and enters an
+HLA federation as an `ATCManagedAircraft` object with encoded
+attributes.
+
+Same tick, four wires, four runtime paths, each independently
+switchable with no runtime dependency on the others.
 
 This is a read-only mirror of the four federation modules as they
 live inside CLEARANCE. It does not build on its own. It exists so
