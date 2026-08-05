@@ -13,10 +13,10 @@ visible without cloning the whole simulator.
 
 **Verification vs validation.** V&V are related but distinct
 activities. **Verification** produces evidence that the
-implementation satisfies its specified requirements — was the
+implementation satisfies its specified requirements: was the
 system built correctly? **Validation** produces evidence that the
 implemented system is suitable for its intended simulation and
-training purpose — was the appropriate system built? Automated
+training purpose: was the appropriate system built? Automated
 tests carry most of the verification load; validation is supported
 by end-to-end scenarios, interoperability demonstrations,
 third-party-tool inspection (Wireshark, RTI Admin Console), and
@@ -30,7 +30,7 @@ makes no claim of compliance with DO-178C or any equivalent
 safety-certification standard.** V&V effort here is proportionate
 to the project's purpose, risk, and maturity: CLEARANCE does not
 carry the assurance obligations of Level A airborne software, but
-it does demonstrate — proportionately — the underlying engineering
+it does demonstrate: proportionately: the underlying engineering
 practices expected of high-integrity simulation development:
 uniquely identified and testable requirements, bidirectional
 traceability between requirements and verification cases,

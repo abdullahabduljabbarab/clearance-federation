@@ -27,7 +27,7 @@ tick; discrete events (Fire, Detonation, Signal) are published when
 they occur. Each backend independently converts the relevant
 snapshot records into its own object model or wire representation
 and writes to its transport. Backends perform representation
-conversion only — they never own or modify simulation state, they
+conversion only: they never own or modify simulation state, they
 are strictly downstream consumers of the authoritative snapshot.
 
 ```
@@ -71,7 +71,7 @@ without touching the authoritative gameplay systems.
 Note on the HLA branch: continuous state (Aircraft) is published as
 attribute updates on `ATCManagedAircraft` object instances, as
 shown above. Discrete events (Fire, Detonation, Signal) would
-normally use HLA Interactions rather than attribute updates — the
+normally use HLA Interactions rather than attribute updates: the
 Interaction path is a documented future extension of `ClearanceHLA`
 and is not yet shipped; the current HLA branch publishes continuous
 state only.

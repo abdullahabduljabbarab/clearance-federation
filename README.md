@@ -195,7 +195,7 @@ one Emission PDU per active radar per tick. The expanded frame
 centre frequency, PRF, pulse width and effective radiated power. The
 three highlighted enum values are the exact fields called out in
 `REQUIREMENTS.md` and `ARCHITECTURE.md`, decoded independently by
-Wireshark's own DIS dissector — third-party proof that the wire codec
+Wireshark's own DIS dissector: third-party proof that the wire codec
 writes SISO-conformant values.*
 
 </div>
@@ -253,7 +253,7 @@ Entity State field set (ForceId, EntityKind / Domain / Country /
 Category, `XMeters/YMeters/ZMeters` ECEF position, velocity, radians
 orientation) plus the ATC-specific extension fields (`TrueAffiliation`,
 `SquawkCode`, `ActiveEmergency`, `FlightPhase`) whose comments cite the
-`ATCManagedAircraft` subclass in `ClearanceRPR-FOM.xml` — same schema,
+`ATCManagedAircraft` subclass in `ClearanceRPR-FOM.xml`: same schema,
 DIS-side and HLA-side. This one IDL is what Fast DDS's `fastddsgen`
 and RTI Connext's `rtiddsgen` both code-generate from, encoding the
 six topics (`AircraftState`, `EmissionSnapshot`, `TransmitterState`,
@@ -460,9 +460,9 @@ clearance-federation/
 
 Structural claims in this repo (PDU byte sizes, protocol family assignments, DIS version 7 = IEEE 1278.1-2012) are corroborated against open-source DIS implementations and third-party dissectors, not just the paid IEEE PDF:
 
-- **KDIS** — open-source C++ DIS library (BSD-2-Clause), https://github.com/karljj1/kdis. `_SIZE` constants and folder structure independently confirm byte sizes (`ENTITY_STATE_PDU_SIZE = 144`, `FIRE_PDU_SIZE = 96`, `DETONATION_PDU_SIZE = 104`, `TRANSMITTER_PDU_SIZE = 104`) and family groupings (`PDU/Warfare/`, `PDU/Radio_Communications/`, `PDU/Distributed_Emission_Regeneration/`). Its Build Option table also confirms `DIS_VERSION = 7` corresponds to IEEE 1278.1-2012.
-- **Wireshark DIS dissector** — `epan/dissectors/packet-dis.c` in https://github.com/wireshark/wireshark. The same dissector used in Figures 3–5 of this README decodes CLEARANCE's PDUs cleanly. Its enum-string tables (`DIS_PDU_Emitter_System_Function_Strings[]`, `DIS_PDU_Electromagnetic_Emission_Beam_Function_Strings[]`, `DIS_PDU_Radio_Category_Strings[]`) resolve on-wire values to the SISO-REF-010 names in real time — the `EmitterFunction = 22 → "Air Traffic Control"`, `BeamFunction = 1 → "Search"` and `Radio Category = 1 → "Voice Transmission/Reception"` decodes visible in the figures are Wireshark's, not ours. The dissector's internal protocol-version constant `DIS_VERSION_IEEE_1278_1_2012` independently confirms our `protocol_version = 7 = IEEE 1278.1-2012` claim.
-- **SISO-REF-010-2025 v36** — as above, the enumerations catalogue.
+- **KDIS**: open-source C++ DIS library (BSD-2-Clause), https://github.com/karljj1/kdis. `_SIZE` constants and folder structure independently confirm byte sizes (`ENTITY_STATE_PDU_SIZE = 144`, `FIRE_PDU_SIZE = 96`, `DETONATION_PDU_SIZE = 104`, `TRANSMITTER_PDU_SIZE = 104`) and family groupings (`PDU/Warfare/`, `PDU/Radio_Communications/`, `PDU/Distributed_Emission_Regeneration/`). Its Build Option table also confirms `DIS_VERSION = 7` corresponds to IEEE 1278.1-2012.
+- **Wireshark DIS dissector**: `epan/dissectors/packet-dis.c` in https://github.com/wireshark/wireshark. The same dissector used in Figures 3-5 of this README decodes CLEARANCE's PDUs cleanly. Its enum-string tables (`DIS_PDU_Emitter_System_Function_Strings[]`, `DIS_PDU_Electromagnetic_Emission_Beam_Function_Strings[]`, `DIS_PDU_Radio_Category_Strings[]`) resolve on-wire values to the SISO-REF-010 names in real time: the `EmitterFunction = 22 → "Air Traffic Control"`, `BeamFunction = 1 → "Search"` and `Radio Category = 1 → "Voice Transmission/Reception"` decodes visible in the figures are Wireshark's, not ours. The dissector's internal protocol-version constant `DIS_VERSION_IEEE_1278_1_2012` independently confirms our `protocol_version = 7 = IEEE 1278.1-2012` claim.
+- **SISO-REF-010-2025 v36**: as above, the enumerations catalogue.
 
 The specific IEEE 1278.1-2012 sub-section indices (`§7.x.y.z`) cited in this repo and in the code comments are nominal citations against the IEEE standard's table of contents and are not independently verified against the IEEE PDF, which is a paid document.
 
@@ -490,7 +490,7 @@ https://youtu.be/u7qeIkqkt4s
 | 07:06 | OMG DDS via Fast DDS 3.6.1: six topics |
 | 07:40 | AirspaceTelemetry.idl schema |
 | 08:04 | DDS federation live |
-| 09:07 | 44 automation tests, 61 REQ-IDs *(now 52 tests / 69 REQs — see note below)* |
+| 09:07 | 44 automation tests, 61 REQ-IDs *(now 52 tests / 69 REQs: see note below)* |
 | 09:49 | OMG DDS via RTI Connext 7.7.0 |
 | 10:20 | RTI Connext Administration Console |
 | 11:40 | IEEE 1516-2010 HLA-Evolved via OpenRTI |
