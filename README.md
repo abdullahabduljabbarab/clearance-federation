@@ -222,6 +222,61 @@ codec used everywhere else.*
 
 <div align="center">
 
+![Two independent DIS decoders agreeing on the same wire traffic](docs/img/dis-independent-decoders.png)
+
+*Figure 4c: Two independent IEEE 1278.1 decoders reading the same
+multicast traffic and producing matching output. **Left**: a
+hand-rolled ~230-line Python decoder using only the Python
+standard library (`missile-mbd/tools/dis_listener.py`). **Right**:
+a listener backed by the third-party
+[open-dis-python](https://github.com/open-dis/open-dis-python)
+library authored by a different team
+(`missile-mbd/tools/opendis_listener.py`). Firing Entity 1662,
+Munition Entity ID 52624, Event Number 3, `Result: 1 Entity
+Impact`, and Burst Descriptor `(2:3:224:2:8:3)` AIM-120B all
+agree byte for byte across both decoders. Fire location 28 km,
+Detonation 50 km, a plausible short-range SAM engagement. Two
+independent implementations producing identical output on the same
+bytes is real IEEE 1278.1 compliance evidence: neither
+implementation is validating its own emitter. Wireshark's built-in
+DIS dissector (Figures 3-4b) is a third such implementation and
+also agrees.*
+
+</div>
+
+<div align="center">
+
+![CLEARANCE aircraft list ingesting three third-party DIS federate contacts](docs/img/dis-external-list.png)
+
+*Figure 4d: CLEARANCE's aircraft list ingesting three foreign
+contacts (EXT_A320, EXT_F35, EXT_MIG29) published by a third-party
+Python emitter (`missile-mbd/tools/opendis_emitter.py`, built on
+open-dis-python). Each row carries the "SITE 99" chip marking a
+non-local federate. Proves the other direction of interop:
+`ClearanceDISReceiver` correctly ingests EntityState PDUs
+published by a completely different IEEE 1278.1 implementation
+on the same wire.*
+
+</div>
+
+<div align="center">
+
+![CLEARANCE scope showing three third-party DIS federate contacts](docs/img/dis-external-scope.png)
+
+*Figure 4e: Same three foreign contacts visible on CLEARANCE's
+scope, orbiting slowly at the sector centre - published by the
+Python emitter's synthetic-orbit code and rendered by CLEARANCE's
+normal aircraft-symbol pipeline. Same actor code paths as any
+locally-spawned aircraft, driven purely by the received DIS
+EntityState PDUs. Together with Figures 4a-c, this closes the
+bidirectional IEEE 1278.1 interop loop: CLEARANCE's emit is
+decodable by third parties, and CLEARANCE's receive ingests
+third-party emit.*
+
+</div>
+
+<div align="center">
+
 ![Emission PDU (Type 23) decoded in Wireshark showing ASR-9 fingerprint](docs/img/wireshark_emission.png)
 
 *Figure 5: Wireshark capture narrowed with `dis.pdu_type == 23` while the
