@@ -422,6 +422,57 @@ a `<semantics>` block documenting the ATC domain rule.*
 
 </div>
 
+### Cross-vendor RTI validation (Portico)
+
+CLEARANCE currently links against OpenRTI. To test that the FOM and
+the federation contract are portable across implementations rather
+than OpenRTI-flavoured HLA, the `PorticoFederate/` folder ships a
+minimal Java federate (`ClearanceFOMTest.java`) that runs against
+[Portico](https://github.com/openlvc/portico), an independent
+IEEE 1516-2010 implementation developed by a different team than
+OpenRTI. Run it against any FOM URL - it connects, creates the
+federation, joins, resigns, destroys, and reports success or the
+exact FOM error line.
+
+<div align="center">
+
+![Portico validating the Restaurant example FOM end to end](docs/img/portico-restaurant-success.png)
+
+*Figure 12: `ClearanceFOMTest.java` running against Portico's own
+Restaurant example FOM (a known-good IEEE 1516-2010 module that
+ships with Portico). Portico 2.1.4 loads the FOM, creates the
+`CLEARANCE_PORTICO_TEST` federation, brings up a jgroups cluster
+under the covers, the federate joins as `ClearanceFOMTest`, waits
+for FOM callbacks, resigns, destroys the federation, disconnects
+cleanly. Confirms the Java federate, Portico runtime, and the
+`ClearanceFOMTest` logic all work end to end.*
+
+</div>
+
+<div align="center">
+
+![Portico rejecting the CLEARANCE FOM with an ErrorReadingFDD](docs/img/portico-clearance-fom-finding.png)
+
+*Figure 13: Same federate pointed at CLEARANCE's own
+`ClearanceRPR-FOM.xml`. Portico's stricter IEEE 1516-2010 parser
+rejects it with `ErrorReadingFDD: <objects> is missing HLAobjectRoot`,
+even though the file DOES declare `HLAobjectRoot` inside `<objects>`
+(visible in Figure 11's surrounding structure). OpenRTI accepts the
+same file leniently and drives the federation successfully (Figure
+10), so this is a real cross-vendor compatibility gap that
+third-party testing exposed - exactly what independent-RTI validation
+is meant to catch. Follow-ups tracked in
+[`PorticoFederate/README.md`](PorticoFederate/README.md): compare
+`<objects>` byte-for-byte against Portico's Restaurant example, and
+try loading the SISO RPR-FOM 2.0 base module alongside the CLEARANCE
+extension via `createFederationExecution(name, URL[])` so the parent
+inheritance chain the extension references is present at parse time.
+Portfolio takeaway: real HLA interop requires testing against multiple
+RTIs, not just the one you happen to build against. `PorticoFederate`
+is that test.*
+
+</div>
+
 ## Architecture principles
 
 Every wire codec is a **standalone C++ module** with an engine-free

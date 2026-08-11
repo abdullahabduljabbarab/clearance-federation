@@ -8,3 +8,4 @@ DerivedDataCache/
 *.tmp
 *.log
 Thumbs.db
+*.class
