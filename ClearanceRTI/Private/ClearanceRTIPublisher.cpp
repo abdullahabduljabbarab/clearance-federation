@@ -10,9 +10,9 @@
 
 #define CLEARANCERTI_BUILDING  // export the API surface
 
-#include "CoreMinimal.h"  // for THIRD_PARTY_INCLUDES_START/END
-
 #include "ClearanceRTI/ClearanceRTIPublisher.h"
+
+#include "CoreMinimal.h"  // for THIRD_PARTY_INCLUDES_START/END
 
 // RTI Modern C++ (dds::dds.hpp) API surface. Pulls in RTI's platform
 // headers which include <windows.h> - has to sit inside UE's third-party

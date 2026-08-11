@@ -9,9 +9,9 @@
 
 #define CLEARANCEHLA_BUILDING
 
-#include "CoreMinimal.h"  // for THIRD_PARTY_INCLUDES_START/END
-
 #include "ClearanceHLA/ClearanceHLAFederate.h"
+
+#include "CoreMinimal.h"  // for THIRD_PARTY_INCLUDES_START/END
 
 // OpenRTI's rti1516e headers pull in <windows.h> transitively, plus some
 // legacy C-style casts UE flags as warnings-as-errors. Wrap with UE's

@@ -98,7 +98,15 @@ namespace ClearanceDIS
 		std::uint16_t EventNumber    = 0;
 		double        XMeters = 0.0, YMeters = 0.0, ZMeters = 0.0;
 		float         VxMps   = 0.f, VyMps   = 0.f, VzMps   = 0.f;
-		std::uint8_t  MunitionKind = 1;
+		// Burst Descriptor Entity Type: Kind is always Munition; the rest
+		// default to a generic Air Missile (Domain 2, Category 1) so old
+		// call sites are unchanged. Set MunitionDomain / -Category /
+		// -Subcategory / -Specific to the SISO-REF-010 tuple to declare a
+		// specific weapon (e.g. AIM-120B = Domain 3, 2/8/3).
+		std::uint8_t  MunitionDomain      = 2;
+		std::uint8_t  MunitionKind        = 1;
+		std::uint8_t  MunitionSubcategory = 0;
+		std::uint8_t  MunitionSpecific    = 0;
 		std::uint16_t WarheadKind  = 1000;
 		std::uint16_t FuseKind     = 1000;
 		std::uint16_t Quantity     = 1;
@@ -115,7 +123,10 @@ namespace ClearanceDIS
 		std::uint16_t EventNumber      = 0;
 		double        XMeters = 0.0, YMeters = 0.0, ZMeters = 0.0;
 		float         VxMps   = 0.f, VyMps   = 0.f, VzMps   = 0.f;
-		std::uint8_t  MunitionKind     = 1;
+		std::uint8_t  MunitionDomain      = 2;
+		std::uint8_t  MunitionKind        = 1;
+		std::uint8_t  MunitionSubcategory = 0;
+		std::uint8_t  MunitionSpecific    = 0;
 		std::uint16_t WarheadKind      = 1000;
 		std::uint16_t FuseKind         = 1000;
 		std::uint16_t Quantity         = 1;

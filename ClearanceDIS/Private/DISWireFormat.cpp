@@ -244,14 +244,18 @@ namespace ClearanceDIS
 		WriteDoubleBE(Out, E.YMeters);
 		WriteDoubleBE(Out, E.ZMeters);
 
-		// Burst Descriptor (§7.4.3 table 7-4)
+		// Burst Descriptor (§7.4.3 table 7-4). Entity Type subfields default
+		// to Domain=Air / Category=1 (generic missile) for legacy call sites
+		// and can be tightened per-event to a specific SISO-REF-010 tuple
+		// (e.g. AIM-120B: Domain 3 Anti-Air, Category 2 Guided, Subcat 8,
+		// Specific 3). Country stays 224 UK sim-wide. - TripleA
 		WriteU8(Out, 2);                            // Kind = Munition
-		WriteU8(Out, 2);                            // Domain = Air
+		WriteU8(Out, E.MunitionDomain);
 		WriteU16BE(Out, 224);                       // Country = UK
 		WriteU8(Out, E.MunitionKind);
-		WriteU8(Out, 0);
-		WriteU8(Out, 0);
-		WriteU8(Out, 0);
+		WriteU8(Out, E.MunitionSubcategory);
+		WriteU8(Out, E.MunitionSpecific);
+		WriteU8(Out, 0);                            // Extra
 		WriteU16BE(Out, E.WarheadKind);
 		WriteU16BE(Out, E.FuseKind);
 		WriteU16BE(Out, E.Quantity);
@@ -288,10 +292,12 @@ namespace ClearanceDIS
 		Out.ZMeters = ReadDoubleBE(Buf, Len, Cur, Ok);
 
 		(void)ReadU8(Buf, Len, Cur, Ok);              // Kind
-		(void)ReadU8(Buf, Len, Cur, Ok);              // Domain
+		Out.MunitionDomain = ReadU8(Buf, Len, Cur, Ok);
 		(void)ReadU16BE(Buf, Len, Cur, Ok);           // Country
-		Out.MunitionKind = ReadU8(Buf, Len, Cur, Ok);
-		(void)ReadU8(Buf, Len, Cur, Ok); (void)ReadU8(Buf, Len, Cur, Ok); (void)ReadU8(Buf, Len, Cur, Ok);
+		Out.MunitionKind        = ReadU8(Buf, Len, Cur, Ok);
+		Out.MunitionSubcategory = ReadU8(Buf, Len, Cur, Ok);
+		Out.MunitionSpecific    = ReadU8(Buf, Len, Cur, Ok);
+		(void)ReadU8(Buf, Len, Cur, Ok);              // Extra
 		Out.WarheadKind = ReadU16BE(Buf, Len, Cur, Ok);
 		Out.FuseKind    = ReadU16BE(Buf, Len, Cur, Ok);
 		Out.Quantity    = ReadU16BE(Buf, Len, Cur, Ok);
@@ -326,8 +332,11 @@ namespace ClearanceDIS
 		WriteFloatBE(Out, E.VxMps); WriteFloatBE(Out, E.VyMps); WriteFloatBE(Out, E.VzMps);
 		WriteDoubleBE(Out, E.XMeters); WriteDoubleBE(Out, E.YMeters); WriteDoubleBE(Out, E.ZMeters);
 
-		WriteU8(Out, 2); WriteU8(Out, 2); WriteU16BE(Out, 224);
-		WriteU8(Out, E.MunitionKind); WriteU8(Out, 0); WriteU8(Out, 0); WriteU8(Out, 0);
+		// Burst Descriptor Entity Type - same subfield semantics as
+		// BuildFirePDU; per-event tuple pairs the Detonation with the
+		// earlier Fire PDU exactly. - TripleA
+		WriteU8(Out, 2); WriteU8(Out, E.MunitionDomain); WriteU16BE(Out, 224);
+		WriteU8(Out, E.MunitionKind); WriteU8(Out, E.MunitionSubcategory); WriteU8(Out, E.MunitionSpecific); WriteU8(Out, 0);
 		WriteU16BE(Out, E.WarheadKind); WriteU16BE(Out, E.FuseKind);
 		WriteU16BE(Out, E.Quantity);    WriteU16BE(Out, E.Rate);
 
@@ -365,10 +374,13 @@ namespace ClearanceDIS
 		Out.YMeters = ReadDoubleBE(Buf, Len, Cur, Ok);
 		Out.ZMeters = ReadDoubleBE(Buf, Len, Cur, Ok);
 
-		(void)ReadU8(Buf, Len, Cur, Ok); (void)ReadU8(Buf, Len, Cur, Ok);
-		(void)ReadU16BE(Buf, Len, Cur, Ok);
-		Out.MunitionKind = ReadU8(Buf, Len, Cur, Ok);
-		(void)ReadU8(Buf, Len, Cur, Ok); (void)ReadU8(Buf, Len, Cur, Ok); (void)ReadU8(Buf, Len, Cur, Ok);
+		(void)ReadU8(Buf, Len, Cur, Ok);              // Kind
+		Out.MunitionDomain = ReadU8(Buf, Len, Cur, Ok);
+		(void)ReadU16BE(Buf, Len, Cur, Ok);           // Country
+		Out.MunitionKind        = ReadU8(Buf, Len, Cur, Ok);
+		Out.MunitionSubcategory = ReadU8(Buf, Len, Cur, Ok);
+		Out.MunitionSpecific    = ReadU8(Buf, Len, Cur, Ok);
+		(void)ReadU8(Buf, Len, Cur, Ok);              // Extra
 		Out.WarheadKind = ReadU16BE(Buf, Len, Cur, Ok);
 		Out.FuseKind    = ReadU16BE(Buf, Len, Cur, Ok);
 		Out.Quantity    = ReadU16BE(Buf, Len, Cur, Ok);
