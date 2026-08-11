@@ -181,6 +181,47 @@ as every other PDU, no special-case wiring.*
 
 <div align="center">
 
+![Fire PDU (Type 2) for a ground-launched SAM decoded in Wireshark](docs/img/wireshark-fire-pdu.png)
+
+*Figure 4a: Wireshark capture narrowed with `dis.pdu_type == 2` at the
+instant a ground-launched SAM is fired at an aircraft. Warfare-family
+Fire PDU (Type 2, §7.4.3), PDU Length 96 bytes, carries the paired
+Firing / Target / Munition entity IDs and an Event Number that will
+appear again on the matching Detonation PDU. **Burst Descriptor
+resolved as `Munition, (2:3:224:2:8:3:0)`**: SISO-REF-010 AIM-120B
+under `Kind: Munition (2) / Domain: Surface (3) / Country: United
+Kingdom of Great Britain and Northern Ireland (GBR) (224) / Category:
+2 Guided / Subcategory: 8 AIM-120 family / Specific: 3 B-model`.
+Domain 3 (Surface) is the honest classification for a surface-launched
+SAM; the AMRAAM is repurposed as the warhead. Location field carries
+the launcher's world-frame metres, Range field carries the true
+launcher-to-target geometry at launch. Emitted from
+`Plugins/ClearanceSim/Source/ClearanceSim/Private/Simulation/ClearanceMissile.cpp::QueueFireEvent`
+through the shared warfare-event queue and out via the same
+`ClearanceDIS::BuildFirePDU` codec used by any other weapons event.*
+
+</div>
+
+<div align="center">
+
+![Detonation PDU (Type 3) for the SAM engagement decoded in Wireshark](docs/img/wireshark-detonationmissile-pdu.png)
+
+*Figure 4b: Detonation PDU (Type 3, §7.4.4) at the resolution of the
+SAM engagement in Figure 4a, PDU Length 104 bytes. `Firing Entity`,
+`Target Entity`, `Munition Entity`, `Event Number`, and full
+`Burst Descriptor (2:3:224:2:8:3:0)` all mirror the earlier Fire PDU
+so a federation observer can pair the two purely by wire content.
+`Detonation Result: Entity Impact (1)` confirms an actual proximity
+intercept - the target aircraft was hit and dies through the same
+mayday-descent + crash-site pipeline as any other airframe loss.
+Emitted from `ClearanceMissile.cpp::OnTerminationDetected` through
+the same warfare-event queue and `ClearanceDIS::BuildDetonationPDU`
+codec used everywhere else.*
+
+</div>
+
+<div align="center">
+
 ![Emission PDU (Type 23) decoded in Wireshark showing ASR-9 fingerprint](docs/img/wireshark_emission.png)
 
 *Figure 5: Wireshark capture narrowed with `dis.pdu_type == 23` while the
