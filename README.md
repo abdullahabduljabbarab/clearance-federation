@@ -411,6 +411,21 @@ populates this window. Screenshots of code do not.*
 
 </div>
 
+<div align="center">
+
+*Note. The RTI Connext wire in this section uses the same OMG DDS
+RTPS 2.5 transport as Fast DDS above, generated from the same
+`AirspaceTelemetry.idl` (Figure 8), carrying the same six
+`clearance/*` topics. Video 3's cross-LAN capture exercises exactly
+those wire semantics on one DDS runtime; a duplicate video on the
+other runtime would only re-demonstrate what Video 3 already
+demonstrates. Figure 9 above shows RTI Connext participants and
+DataWriters are alive under RTI's own tooling; the cross-network
+guarantee they inherit from RTPS 2.5 is the same one Video 3
+verified against Fast DDS.*
+
+</div>
+
 ## IEEE 1516-2010 HLA-Evolved
 
 <div align="center">
