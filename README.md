@@ -276,6 +276,22 @@ third-party emit.*
 </div>
 
 <div align="center">
+  
+https://github.com/user-attachments/assets/f5ac9e1c-f745-4743-90ea-b0fd9aa54d91
+
+*Video 1 - DIS across LAN. PC A (`192.168.0.254`, `CLEARANCE`)
+emitting IEEE 1278.1 DIS Entity State / Fire / Detonation PDUs. PC B
+(`192.168.0.33`, `opendis_listener.py`) decoding the same PDUs live
+on a separate physical machine one LAN hop away using the independent
+open-source `opendis` Python library — zero shared code with
+CLEARANCE. `LAUNCH MISSILE` click on PC A produces matched `[Fire ]`
++ `[Deton ]` rows on PC B. Multicast doesn't traverse the mesh pods
+between wired-to-different-nodes, so CLEARANCE was pointed at PC B's
+unicast IP for delivery — the wire format itself is unchanged.*
+
+</div>
+
+<div align="center">
 
 ![Emission PDU (Type 23) decoded in Wireshark showing ASR-9 fingerprint](docs/img/wireshark_emission.png)
 
