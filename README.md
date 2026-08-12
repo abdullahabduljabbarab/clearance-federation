@@ -457,6 +457,24 @@ a `<semantics>` block documenting the ATC domain rule.*
 
 </div>
 
+<div align="center">
+  
+https://github.com/user-attachments/assets/96f1679f-f02b-4178-8212-2f499a1ca1a3
+
+*Video 2. HLA across LAN. PC A (`192.168.0.254`, `CLEARANCE`)
+publishing `ATCManagedAircraft` attribute updates through OpenRTI
+`rtinode.exe` (bound to `0.0.0.0` on TCP 14321). PC B
+(`192.168.0.33`, `clearance_hla_subscriber.exe`) joining the
+`CLEARANCE` federation via `rti://192.168.0.254:14321` as a
+separate IEEE 1516-2010 federate on a separate physical machine.
+Emergency squawk injections (7700 / 7500 / 7600) on PC A fire
+visible `[HLA-SUB]` attribute-change lines on PC B within one LAN
+hop. Same RTI-mediated federation shape as Figure 10, now across
+the wire.*
+
+</div>
+
+
 ### Cross-vendor RTI validation (Portico)
 
 CLEARANCE currently links against OpenRTI. To test that the FOM and
