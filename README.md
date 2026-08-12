@@ -283,11 +283,11 @@ https://github.com/user-attachments/assets/f5ac9e1c-f745-4743-90ea-b0fd9aa54d91
 emitting IEEE 1278.1 DIS Entity State / Fire / Detonation PDUs. PC B
 (`192.168.0.33`, `opendis_listener.py`) decoding the same PDUs live
 on a separate physical machine one LAN hop away using the independent
-open-source `opendis` Python library — zero shared code with
+open-source `opendis` Python library - zero shared code with
 CLEARANCE. `LAUNCH MISSILE` click on PC A produces matched `[Fire ]`
 + `[Deton ]` rows on PC B. Multicast doesn't traverse the mesh pods
 between wired-to-different-nodes, so CLEARANCE was pointed at PC B's
-unicast IP for delivery — the wire format itself is unchanged.*
+unicast IP for delivery - the wire format itself is unchanged.*
 
 </div>
 
@@ -371,6 +371,25 @@ and RTI Connext's `rtiddsgen` both code-generate from, encoding the
 six topics (`AircraftState`, `EmissionSnapshot`, `TransmitterState`,
 `SignalEvent`, `FireEvent`, `DetonationEvent`) on the wire as OMG CDR
 inside RTPS 2.5.*
+
+</div>
+
+<div align="center">
+  
+https://github.com/user-attachments/assets/66ca54fc-26b2-4e81-93e2-815618854712
+
+*Video 3. Fast DDS across LAN. PC A (`192.168.0.254`, `CLEARANCE`)
+publishing the six `clearance/*` topics via eProsima Fast DDS 3.6.
+PC B (`192.168.0.33`, `clearance_dds_subscriber.exe`) subscribing
+from a separate process on a separate physical machine, built from
+the same IDL but linked and launched independently. `SCRAMBLE` /
+`LAUNCH MISSILE` on PC A produces matched `[FireEvent]` and
+`[DetonationEvent]` lines on PC B alongside continuous
+`[AircraftState]` / `[EmissionSnapshot]` scroll. Fast DDS defaults
+to multicast for participant discovery, which the mesh pods drop.
+Forced unicast via a `fastdds_lan.xml` profile on each PC declaring
+the other PC's IP in `<initialPeersList>`, no code changes to
+publisher or subscriber, pure config.*
 
 </div>
 
