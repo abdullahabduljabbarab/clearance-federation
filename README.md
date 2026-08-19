@@ -59,6 +59,21 @@ console. Enabling DDS does not enable DIS. Enabling all four does
 not double-encode the snapshot; they read from the same source
 struct and marshal separately.
 
+## Documentation
+
+| Document | Purpose |
+|---|---|
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Module-by-module architecture across the four wires. |
+| [REQUIREMENTS.md](REQUIREMENTS.md) | Requirements traced to their verifying tests. |
+| [V_AND_V_PLAN.md](V_AND_V_PLAN.md) | Verification strategy and manual procedures. |
+| [DEVLOG.md](DEVLOG.md) | Chronological engineering journal for the federation. |
+| [docs/DIS.md](docs/DIS.md) | IEEE 1278.1 wire codec, PDU coverage, verification. |
+| [docs/FASTDDS.md](docs/FASTDDS.md) | Fast DDS binding, IDL schema, standalone subscriber. |
+| [docs/RTI_CONNEXT.md](docs/RTI_CONNEXT.md) | RTI Connext binding, Admin Console verification, build integration. |
+| [docs/HLA.md](docs/HLA.md) | IEEE 1516-2010 via OpenRTI, ATCManagedAircraft FOM extension. |
+| [docs/PORTICO_GAP.md](docs/PORTICO_GAP.md) | Documented cross-vendor FOM compatibility gap against Portico. |
+| [PorticoFederate/README.md](PorticoFederate/README.md) | Third-party FOM validator source, build, and run instructions. |
+
 ## DIS PDU coverage
 
 Six IEEE 1278.1 PDU types, every one spec-compliant, every one
